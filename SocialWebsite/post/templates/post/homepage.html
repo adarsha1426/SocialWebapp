@@ -2,15 +2,16 @@
 {% include "base.html" %}
 {% block content %}
 <hr>
-<div class="flex items-center justify-center h-screen">
-    
-    <div class="text-black">
-        
-    </div>
-    <div class="max-w-md bg-white p-6 rounded-lg shadow-md">
-        <!-- Create Post Section -->
+<style>
+ #content{
+        margin-top: 450px; /* Adjust this value based on your navbar height */
+    } 
+</style>
+<div id="content" class="flex items-center justify-center h-screen">
+    <div class="max-w-md mt-11 pt-14  bg-yellow-500 p-6 rounded-lg shadow-md">
+        {% include "post/create_post.html" %}
         <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
-           {% comment %} post_form section {% endcomment %}
+           post_form section
         </div>
         <!-- Posted Items Section -->
         <div class="mt-8 space-y-6">
@@ -40,6 +41,9 @@
                 {% if post.image %}
                 <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
                 {% endif %}
+                <a href="#">Like</a>
+                <a href="#">Comment</a>
+                <a href="#">Share</a>
             </div>
             {% endfor %}
         </div>
