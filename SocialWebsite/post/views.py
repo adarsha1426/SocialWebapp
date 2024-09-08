@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .models import Post
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.shortcuts import redirect,HttpResponse
 
 from django.contrib import messages
 # Create your views here.
@@ -36,12 +36,10 @@ def base(request):
     return render(request,"post/base_.html",{'profile':profile})
 @login_required
 def create_post(request):
-
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)  # Get the Profile of the logged-in user
-        post_form = PostForm(request.POST or None)
-
         if request.method == 'POST':
+            post_form = PostForm(request.POST ,request.FILES)
             if post_form.is_valid():
                 post = post_form.save(commit=False)  # Don't save to the database yet
                 post.user = profile  # Assign the Profile, not the User
@@ -57,5 +55,6 @@ def create_post(request):
         return redirect('post:home')  
     return render(request, 'post/create_post.html', {'post_form': post_form})
 
-def count_likes(request):
-    pass
+def like(request,post_slug):
+    post=get_object_or_404(Post,slug=Post.slug)
+    return HttpResponse(f"The post slug is: {post.slug}")
