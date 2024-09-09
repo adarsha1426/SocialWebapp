@@ -3,7 +3,7 @@ from userdetail.models import Profile
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Post
-from .forms import PostForm
+from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect,HttpResponse
 
@@ -33,7 +33,7 @@ def base(request):
     user = get_object_or_404(User, username=request.user)
     profile=Profile.objects.get(user=request.user)
     print(profile.profile_pic) 
-    return render(request,"post/base_.html",{'profile':profile})
+    return render(request,"base.html",{'profile':profile})
 @login_required
 def create_post(request):
     if request.user.is_authenticated:
@@ -56,5 +56,25 @@ def create_post(request):
     return render(request, 'post/create_post.html', {'post_form': post_form})
 
 def like(request,post_slug):
-    post=get_object_or_404(Post,slug=Post.slug)
-    return HttpResponse(f"The post slug is: {post.slug}")
+    post=get_object_or_404(Post,slug=post_slug)
+    if request.user.profile in post.likes.all():
+        post.likes.remove(request.user.profile)
+    else:
+        post.likes.add(request.user.profile)
+
+    return redirect('post:home')
+
+@login_required
+def create_comment(request, post_slug):
+    post = get_object_or_404(Post, slug=post_slug)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = request.user.profile # Assuming comments are linked to a user
+            comment.save()
+            return redirect('post:home')  # Redirect after successful comment
+    else:
+        form = CommentForm()
+    return render(request, 'post/create_comment.html', {'comment_form': form, 'post': post})
