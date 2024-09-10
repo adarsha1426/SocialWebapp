@@ -1,18 +1,17 @@
 {% load static %}
 {% include "base.html" %}
 {% block content %}
-<hr>
-<style>
- #content{
-        margin-top: 450px; /* Adjust this value based on your navbar height */
-    } 
-</style>
-<div id="content" class="flex items-center justify-center h-screen">
-    <div class="max-w-md mt-11 pt-14  bg-yellow-500 p-6 rounded-lg shadow-md">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body >
+    <div class=" felx justify-center max-w-md mt-11 pt-14  bg-blue-500 p-6 rounded-lg shadow-md ">
         {% include "post/create_post.html" %}
-        <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
-           post_form section
-        </div>
+      
         <!-- Posted Items Section -->
         <div class="mt-8 space-y-6">
             {% for post in posts %}
@@ -31,22 +30,30 @@
                         
                         <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
                     </div>
+                    <div class="flex flex-col">
+                        <a href="{% url "post:post" post_slug=post.slug %}">View Post</a>
+                    </div>
+                   
                 </div>
         
                 <!-- Post Content -->
-                <h2 class="font-semibold text-lg">{{ post.title }}</h2>
                 <p class="text-gray-700 ">{{ post.body }}</p>
-                
                 <!-- Post Image -->
                 {% if post.image %}
                 <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
                 {% endif %}
-                <a href="#">Like</a>
-                <a href="#">Comment</a>
+                <p>{{post.slug}}</p>
+                {% if request.user %}{% endif %}
+                <a href="{% url "post:like" post_slug=post.slug %}">Like</a>
+                
+                <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
                 <a href="#">Share</a>
+                <p>likes: {{post.count_like}}</p>
             </div>
             {% endfor %}
         </div>
     </div>
 </div>
 {% endblock content %}
+</body>
+</html>

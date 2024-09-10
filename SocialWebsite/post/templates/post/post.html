@@ -1,31 +1,6 @@
 {% load static %}
 {% include "base.html" %}
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
 {% block content %}
-<body>
-    <div class="flex  justify-center align-center">
-        <ul class="mt-14">
-            <li> <a href="{% url 'userdetail:edit' user.username %}">Edit</a></li>
-            <li><img   class="h-10 w-10 rounded-full"
-                src="{% if profile.profile_pic %}{{profile.profile_pic}}{% else %} static\profile_images\default_profile.jpg {% endif %}"
-                alt="{{ profile.user }}"></li>
-            <li> <h1>Name: {{ profile.user.first_name }} {{ profile.user.last_name }} </h1></li>
-            <li> <h1>Email: {{ profile.user.email }}</h1></li>
-            <li> <h1>Username: {{ profile.user }}</h1></li>
-            <li><p>Date of Birth: {{ profile.date_of_birth }}</p></li>
-        </ul>
-      
-    </div>
-    <div>
-        
 <div class=" felx justify-center max-w-md mt-11 pt-14  bg-blue-500 p-6 rounded-lg shadow-md ">
 <div class="bg-white p-6 rounded-lg shadow-md border border-slate-rgb(0,0,0)">
 <div class="flex items-center space-x-2 mb-4">
@@ -75,12 +50,4 @@
             <p>No comments yet. Be the first to comment!</p>
         {% endfor %}
     </div>
-
-
-    </div>
-</body>
 {% endblock content %}
-</html>
-
-   
-    

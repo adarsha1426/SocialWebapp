@@ -6,6 +6,7 @@ app_name="post"
 urlpatterns = [
     path('',views.home,name="home"),
     path('create',views.create_post,name="create_post"),
+    path('post/<slug:post_slug>',views.postdetail,name="post"),
     path('like/<slug:post_slug>',views.like,name="like"),
     path('comment/<slug:post_slug>',views.create_comment,name="create_comment"),
 
