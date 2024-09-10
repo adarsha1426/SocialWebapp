@@ -5,4 +5,6 @@ from .models import Post,Comment
 class PostAdmin(admin.ModelAdmin):
     list_display=['user','slug','count_like']
 admin.site.register(Post,PostAdmin)
-admin.site.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display=['body','id','count_like','user']
+admin.site.register(Comment,CommentAdmin)
