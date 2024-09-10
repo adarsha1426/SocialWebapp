@@ -7,6 +7,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from .models import Profile
+from post.models import Post,Comment
+from post.views import postdetail
 # Create your views here.
 
 def login_view(request):
@@ -35,10 +37,11 @@ def login_view(request):
     return render(request, "userdetail/login.html", {'form': form})
     
 def logout_view(request):
-    user=request.user
-    if user.is_active:
-        logout(request)
-        messages.success(request,"You have been logged out.")
+    if request.user.is_authenticated:
+        logout(request)  # This will log out the user
+        messages.success(request, "You have been logged out.")  # Add a success message
+    
+    # Redirect to home or login page after logging out
     return render(request,'userdetail/logout.html')
     
 def register(request):
@@ -83,9 +86,23 @@ def change_password(request):
     return render(request, 'userdetail/password_change.html', {'form': form})
 @login_required(login_url='userdetail:login')
 def profile(request):
+  
     profile=Profile.objects.get(user=request.user)
+    current_user = request.user
+
+    try:
+        user_profile=Profile.objects.get(user=current_user)
+    except Profile.DoesNotExist:
+        user_profile,created = Profile.objects.get_or_create(user=request.user)
+
+    # Exclude posts created by the current user's profile
+    posts = Post.objects.filter(user=user_profile)
+    for post in posts:
+        print(post.slug)
+        postdetail(request,post.slug)
     print(profile)
-    return render(request,'userdetail/profile.html',{'profile':profile})
+    return render(request,'userdetail/profile.html',{'profile':profile,
+                                                     'posts':posts})
 @login_required(login_url='userdetail:login')
 
 def edit_profile(request, username):
