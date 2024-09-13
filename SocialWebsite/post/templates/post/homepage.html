@@ -9,6 +9,7 @@
     <title>Document</title>
 </head>
 <body >
+    <div class="flex justify-center w-full">
     <div class=" felx justify-center max-w-md mt-11 pt-14  bg-blue-500 p-6 rounded-lg shadow-md ">
         {% include "post/create_post.html" %}
       
@@ -43,8 +44,11 @@
                 <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
                 {% endif %}
                 <p>{{post.slug}}</p>
-                {% if request.user %}{% endif %}
+                {% if msg is True%}
+                <a href="{% url "post:like" post_slug=post.slug %}">UnLike</a>
+                {% else %}
                 <a href="{% url "post:like" post_slug=post.slug %}">Like</a>
+                {% endif %}
                 
                 <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
                 <a href="#">Share</a>
