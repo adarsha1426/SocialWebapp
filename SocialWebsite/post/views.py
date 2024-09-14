@@ -9,40 +9,44 @@ from django.shortcuts import redirect,HttpResponse
 from django.db.models import Count
 
 from django.contrib import messages
+
 # Create your views here.
 @login_required(login_url='userdetail:login')
 def home(request):
     current_user = request.user
-
     try:
         user_profile=Profile.objects.get(user=current_user)
     except Profile.DoesNotExist:
         user_profile,created = Profile.objects.get_or_create(user=request.user)
 
     # Exclude posts created by the current user's profile
-    post = Post.objects.exclude(user=user_profile)
+    posts = Post.objects.exclude(user=user_profile)
     
     try:
         profile = Profile.objects.get(user=request.user)
     except Profile.DoesNotExist:
         profile, created = Profile.objects.get_or_create(user=request.user)
     
+    
     # Fetching full model instances instead of values()
     profile_objects = Profile.objects.exclude(user=current_user)
     print(current_user)
     context = {
-        'posts': post,
+        'posts': posts,
         'profile': profile,
         'profile_objects': profile_objects,
+        
     }
     return render(request, "post/homepage.html", context)
 
+#nav bar
 def base(request):
     user = get_object_or_404(User, username=request.user)
     profile=Profile.objects.get(user=request.user)
     print(profile.profile_pic) 
     return render(request,"base.html",{'profile':profile})
 
+#creating post
 @login_required
 def create_post(request):
     if request.user.is_authenticated:
@@ -64,6 +68,7 @@ def create_post(request):
         return redirect('post:home')  
     return render(request, 'post/create_post.html', {'post_form': post_form})
 
+#post detail
 def postdetail(request,post_slug):
     post=get_object_or_404(Post,slug=post_slug)
     comments = Comment.objects.filter(post=post)
@@ -72,15 +77,20 @@ def postdetail(request,post_slug):
     print(comment.get_username() for comment in comments)
     return render(request,'post/post.html',{'post':post,'comments':comments,'comment_count':comment_count})
 
+#post like
 def like(request,post_slug):
     post=get_object_or_404(Post,slug=post_slug)
+    msg=False
     if request.user.profile in post.likes.all():
         post.likes.remove(request.user.profile)
+        msg=False
     else:
         post.likes.add(request.user.profile)
+        msg=True
 
     return redirect('post:home')
 
+#Creating comment
 @login_required
 def create_comment(request, post_slug):
     post = get_object_or_404(Post, slug=post_slug)
@@ -95,6 +105,7 @@ def create_comment(request, post_slug):
     else:
         form = CommentForm()
     return render(request, 'post/create_comment.html', {'comment_form': form, 'post': post})
+
 
 def share():
     pass

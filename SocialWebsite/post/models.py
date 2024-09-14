@@ -40,16 +40,13 @@ class Comment(models.Model):
     user=models.ForeignKey(Profile,on_delete=models.CASCADE)
     post=models.ForeignKey(Post,max_length='300',on_delete=models.CASCADE)
     body=models.CharField(max_length=200,blank=True)
-   
     likes=models.ManyToManyField(Profile,related_name="comment_like",blank=True)
-    
+
     def count_like(self):
         return self.likes.count()
     
     def get_username(self):
         return f"{self.user}"
-
-    
 
     def __str__(self):
         return f"{self.body}"
