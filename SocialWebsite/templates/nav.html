@@ -9,8 +9,12 @@
 
     {% tailwind_css %}
 </head>
-<body>
-    <nav class="bg-white shadow-lg">
+<style>
+
+    
+</style>
+<body >
+    <nav class="bg-white shadow-lg  flex  justify-evenly static">
         <div class="container mx-auto px-4 flex justify-between items-center h-16">
             <!-- Logo Section -->
             <div class="logo flex items-center">
@@ -28,6 +32,9 @@
             <div class="home">
                 <a href="{% url 'userdetail:change' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">{% if request.user.is_authenticated is True %}{{request.user.first_name}}{% endif %}</a>
             </div>
+            <div class="home">
+                <a href="{% url 'post:create_post' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Create Post</a>
+            </div>
             {% if request.user.is_authenticated %}
             
             <div class="home">
@@ -41,9 +48,9 @@
                         <a href="{% url 'userdetail:profile' %}">
                             <img class="h-10 w-10 rounded-full" src="{{ profile.profile_pic }}" alt="{{ request.user.username }}">
                         </a>
-    {% else %}
+        {% else %}
         <a href="{% url 'userdetail:profile' %}">
-            <img class="h-10 w-10 rounded-full" src="{% static 'images/default_image.jpg' %}" alt="{{ request.user.username }}">
+            <img class="h-10 w-10 rounded-full" src="static\profile_images\default_profile.jpg" alt="{{ request.user.username }}">
         </a>
     {% endif %}
 {% else %}

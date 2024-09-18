@@ -1,7 +1,6 @@
 {% load static %}
 {% include "base.html" %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,76 +10,49 @@
 </head>
 {% block content %}
 <body>
-    <div class="flex  justify-center align-center">
-        <ul class="mt-14">
-            <li> <a href="{% url 'userdetail:edit' user.username %}">Edit</a></li>
-            <li><img   class="h-10 w-10 rounded-full"
-                src="{% if profile.profile_pic %}{{profile.profile_pic}}{% else %} static\profile_images\default_profile.jpg {% endif %}"
-                alt="{{ profile.user }}"></li>
-            <li> <h1>Name: {{ profile.user.first_name }} {{ profile.user.last_name }} </h1></li>
-            <li> <h1>Email: {{ profile.user.email }}</h1></li>
-            <li> <h1>Username: {{ profile.user }}</h1></li>
-            <li><p>Date of Birth: {{ profile.date_of_birth }}</p></li>
-        </ul>
-      
-    </div>
-    <div>
-        
-<div class=" felx justify-center max-w-md mt-11 pt-14  bg-blue-500 p-6 rounded-lg shadow-md ">
-<div class="bg-white p-6 rounded-lg shadow-md border border-slate-rgb(0,0,0)">
-<div class="flex items-center space-x-2 mb-4">
-    <!-- Profile Picture -->
-    {% if post.user.profile_pic %}
-    <img class="h-10 w-10 rounded-full" src="{{ post.user.profile_pic }}" alt="{{ post.user.username }}">
-    {% else %}
-    <img class="h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ post.user.username }}">
-    {% endif %}
-    
-    <!-- Username and Post Details -->
-    <div class="flex flex-col">
-        <h2 class="font-semibold text-lg">{{ post.user }}</h2>
-        
-        <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
-    </div>
-    <div class="flex flex-col">
-        <a href="{% url "post:post" post_slug=post.slug %}">View Post</a>
-    </div>
-   
-</div>
+    <div class="max-w-md mx-auto text-center mt-10 space-y-4">
+        <!-- Profile Picture -->
+        <div>
+            <img class="h-24 w-24 rounded-full object-cover mx-auto"
+                 src="{% if profile.profile_pic %}{{ profile.profile_pic.url }}{% else %}{% static 'profile_images/default_profile.jpg' %}{% endif %}" 
+                 alt="{{ profile.user }}">
+        </div>
 
-    <!-- Post Content -->
-    <p class="text-gray-700 ">{{ post.body }}</p>
-    <!-- Post Image -->
-    {% if post.image %}
-    <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
-    {% endif %}
-    <p>{{post.slug}}</p>
-    {% if request.user %}{% endif %}
-    <a href="{% url "post:like" post_slug=post.slug %}">Like</a>
+        <!-- Name, Username, and Bio -->
+        <div>
+            <h1 class="text-xl font-semibold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+            <p class="text-gray-500">@{{ profile.user.username }}</p>
+            {% if profile.date_of_birth  %}
+            <p class="text-gray-600">Date of Birth: {{ profile.date_of_birth }}</p>
+            {% endif %}
+           
+        </div>
 
-    <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
-    <a href="#">Share</a>
-    <p>likes: {{post.count_like}}</p>
-    </div>
-       <div class="comments-section">
-        <h2>Comments ({{ comment_count }})</h2>
-        {% for comment in comments %}
-            <div class="comment">
-                <strong>{{ comment.user.user.first_name }} {{comment.user.user.last_name}}</strong>:<!-- commentmodel-> user -> Profilemodel - > user - > username-->
-                {{ comment.body }}<br>
-                <small>Posted on {{ comment.created_at }}</small>
+        <!-- Edit Profile Button -->
+        <div>
+            <a href="{% url 'userdetail:edit' user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
+                Edit Profile
+            </a>
+        </div>
+
+        <!-- Following and Followers Count -->
+        <div class="flex justify-around text-center text-gray-700 border-t border-gray-200 pt-4">
+            <div>
+                <h2 class="font-semibold"><a href="{% url "post:your_post" profile.user.username %}">Your Posts</a></h2>
+                <p class="text-sm">456</p> <!-- Example count -->
             </div>
-            <hr>
-        {% empty %}
-            <p>No comments yet. Be the first to comment!</p>
-        {% endfor %}
-    </div>
-
-
+            <div>
+                <h2 class="font-semibold">Following</h2>
+                <p class="text-sm">123</p> <!-- Example count -->
+            </div>
+            <div>
+                <h2 class="font-semibold">Followers</h2>
+                <p class="text-sm">456</p> <!-- Example count -->
+            </div>
+            
+        </div>
     </div>
 </body>
+
 {% endblock content %}
 </html>
-
-   
-    
