@@ -9,7 +9,8 @@ urlpatterns = [
     path('post/<slug:post_slug>',views.postdetail,name="post"),
     path('like/<slug:post_slug>',views.like,name="like"),
     path('comment/<slug:post_slug>',views.create_comment,name="create_comment"),
-
+    path('profile/<str:username>',views.postdetail,name="your_profile"),
+    path('user_post/<str:username>',views.your_post,name="your_post"),
 
     path('',include('userdetail.urls'),name="userdetail"),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

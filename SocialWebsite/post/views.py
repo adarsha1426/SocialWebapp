@@ -107,5 +107,15 @@ def create_comment(request, post_slug):
     return render(request, 'post/create_comment.html', {'comment_form': form, 'post': post})
 
 
+
+
+def your_post(request,username):
+    user = request.user
+    profile = get_object_or_404(Profile, user=user)
+
+    # Get the posts of the user
+    posts = Post.objects.filter(user=user)
+    return render(request,"post/your_post.html",{'post':post})
+
 def share():
     pass
