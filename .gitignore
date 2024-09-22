@@ -2,5 +2,8 @@ env
 
 db.sqlite3
 
-__pycache__
-SocialWebsite\post\__pycache__
+
+
+# Ignore Python cache files
+__pycache__/
+SocialWebsite/post/__pycache__/
