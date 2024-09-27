@@ -108,14 +108,31 @@ def create_comment(request, post_slug):
 
 
 
-
-def your_post(request,username):
+from django.conf import settings
+def your_post(request, id):
+    # Get the logged-in user and their profile
     user = request.user
-    profile = get_object_or_404(Profile, user=user)
+    profile = get_object_or_404(Profile, user=user)  # Get the profile based on the user
 
-    # Get the posts of the user
-    posts = Post.objects.filter(user=user)
-    return render(request,"post/your_post.html",{'post':post})
+    # Now filter posts using the profile (not the user)
+    posts = Post.objects.filter(user=profile)  # Filter by profile since `user` is a ForeignKey to `Profile`
 
+    return render(request, "post/your_post.html", {'posts': posts})
+@login_required
+def delete_post(request,post_id):
+    post=get_object_or_404(Post,id=post_id)
+    print(post.user)
+    print(f"reuested user: {request.user}")
+    if post.user.user==request.user:
+        post.delete()
+        return redirect('userdetail:home')
+    else:
+        return HttpResponse(request,"Error")
+def delete(request,post_id):
+    post=get_object_or_404(Post,id=post_id)
+    if post.user.user == request.user:
+        return render(request, "post/delete_post.html", {'post': post})
+    else:
+        return HttpResponse(f"{request.user} Post user {post.user.user}You are not authorized to delete this post.")
 def share():
     pass

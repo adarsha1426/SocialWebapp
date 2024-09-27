@@ -3,6 +3,7 @@ from userdetail.models import Profile
 from django.conf import settings
 from django.utils.text import slugify
 import uuid
+from django.urls import reverse
 class Post(models.Model):
     user=models.ForeignKey(Profile,on_delete=models.CASCADE)
     slug = models.SlugField(null=False, unique=True)
@@ -32,6 +33,10 @@ class Post(models.Model):
         return self.likes.count()
     def get_username(self):
         return self.user
+
+    def get_absolute_url(self):
+        return reverse('post:your_post', args=[self.id])
+    
 
     def __str__(self):
         return f"{self.user} post created on  {self.created} ."
