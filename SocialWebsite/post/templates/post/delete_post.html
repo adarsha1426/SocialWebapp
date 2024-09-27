@@ -1,0 +1,10 @@
+{% load static %}
+{% include "base.html" %}
+{{post.id}}
+<form action="{% url "post:delete_post" post.id %}" >
+    {% csrf_token %}
+    <div class="flex flex-col">
+        <button type="submit">Yes, delete it</button>
+        <a href="{{post.get_absolute_url}}">No, go back</a>
+    </div>
+</form>

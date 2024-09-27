@@ -12,5 +12,6 @@ class Profile(models.Model):
     symmetrical=False, 
     blank=True
 )#This indicates a relationship between instances of the same model (i.e., a user can follow other users from the same model).
+    
     def __str__(self) :
         return f"{self.user.first_name}"

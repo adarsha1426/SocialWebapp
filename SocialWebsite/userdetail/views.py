@@ -97,12 +97,11 @@ def profile(request):
 
     # Exclude posts created by the current user's profile
     posts = Post.objects.filter(user=user_profile)
-    for post in posts:
-        print(post.slug)
-        postdetail(request,post.slug)
-    print(profile)
+    posts_count=posts.count()
+    print(posts_count)
     return render(request,'userdetail/profile.html',{'profile':profile,
-                                                     'posts':posts})
+                                                     'posts':posts,
+                                                     "posts_count":posts_count})
 @login_required(login_url='userdetail:login')
 
 def edit_profile(request, username):
