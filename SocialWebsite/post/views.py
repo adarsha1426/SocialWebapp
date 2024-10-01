@@ -6,14 +6,17 @@ from .models import Post,Comment
 from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect,HttpResponse
+
 from django.db.models import Count
 
+from django.conf import settings
 from django.contrib import messages
 
 # Create your views here.
 @login_required(login_url='userdetail:login')
 def home(request):
     current_user = request.user
+    user_profile=User.objects.exclude(username=request.user).all()
     try:
         user_profile=Profile.objects.get(user=current_user)
     except Profile.DoesNotExist:
@@ -35,6 +38,7 @@ def home(request):
         'posts': posts,
         'profile': profile,
         'profile_objects': profile_objects,
+        'user_profile': user_profile,
         
     }
     return render(request, "post/homepage.html", context)
@@ -108,9 +112,7 @@ def create_comment(request, post_slug):
 
 
 
-from django.conf import settings
 def your_post(request, id):
-    # Get the logged-in user and their profile
     user = request.user
     profile = get_object_or_404(Profile, user=user)  # Get the profile based on the user
 
@@ -118,6 +120,7 @@ def your_post(request, id):
     posts = Post.objects.filter(user=profile)  # Filter by profile since `user` is a ForeignKey to `Profile`
 
     return render(request, "post/your_post.html", {'posts': posts})
+
 @login_required
 def delete_post(request,post_id):
     post=get_object_or_404(Post,id=post_id)
@@ -128,11 +131,17 @@ def delete_post(request,post_id):
         return redirect('post:home')
     else:
         return HttpResponse(request,"Error")
+    
 def delete(request,post_id):
     post=get_object_or_404(Post,id=post_id)
     if post.user.user == request.user:
         return render(request, "post/delete_post.html", {'post': post})
     else:
         return HttpResponse(f"{request.user} Post user {post.user.user}You are not authorized to delete this post.")
+
+
 def share():
+    pass
+
+def follow(request,id):
     pass
