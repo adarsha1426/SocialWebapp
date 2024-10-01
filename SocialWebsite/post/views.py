@@ -125,7 +125,7 @@ def delete_post(request,post_id):
     print(f"reuested user: {request.user}")
     if post.user.user==request.user:
         post.delete()
-        return redirect('userdetail:home')
+        return redirect('post:home')
     else:
         return HttpResponse(request,"Error")
 def delete(request,post_id):
