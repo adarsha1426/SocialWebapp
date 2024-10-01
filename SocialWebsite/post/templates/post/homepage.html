@@ -57,6 +57,13 @@
             {% endfor %}
         </div>
     </div>
+    <div class="felx justify-center h-1/2 max-w-md mt-11 ml-11 pt-14  bg-green-600 p-6 rounded-lg shadow-md" >
+        <a href="">Suggested for you</a>
+        {% for profile in user_profile  %}
+        <p>hola</p>
+            {{profile.user.email}}
+        {% endfor %}
+    </div>
 </div>
 {% endblock content %}
 </body>
