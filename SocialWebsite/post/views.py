@@ -16,7 +16,6 @@ from django.contrib import messages
 @login_required(login_url='userdetail:login')
 def home(request):
     current_user = request.user
-    user_profile=User.objects.exclude(username=request.user).all()
     try:
         user_profile=Profile.objects.get(user=current_user)
     except Profile.DoesNotExist:
@@ -33,7 +32,7 @@ def home(request):
     
     # Fetching full model instances instead of values()
     profile_objects = Profile.objects.exclude(user=current_user)
-    print(current_user)
+    user_profile = User.objects.exclude(id=current_user.id).values() 
     context = {
         'posts': posts,
         'profile': profile,
