@@ -1,7 +1,7 @@
 
 <ul>
     {% for user in user_profile %}
-        <li><a href="{% url "userdetail:search_profile" username=user.username%}">{{ user.username }}</a></li>
+        <li><a href="{% url "userdetail:user_profile" username=user.username%}">{{ user.username }}</a></li>
     {% empty %}
         <li>No users found.</li>
     {% endfor %}

@@ -27,14 +27,15 @@
             {% endif %}
            
         </div>
-
+        {% for message in messages  %}
+        {{message}}
+        {% endfor %}
         <!-- Edit Profile Button -->
-        <div>
-            <a href="{% url 'userdetail:edit' user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
-                Edit Profile
-            </a>
-        </div>
-
+        {% if is_following %}
+        <a href="{% url 'userdetail:unfollow_user' username=user.username %}">Unfollow</a>
+    {% else %}
+        <a href="{% url 'userdetail:follow_user' username=user.username %}">Follow</a>
+    {% endif %}
         <!-- Following and Followers Count -->
         <div class="flex justify-around text-center text-gray-700 border-t border-gray-200 pt-4">
             <div>
