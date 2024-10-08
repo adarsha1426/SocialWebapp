@@ -28,14 +28,14 @@
            
         </div>
         {% for message in messages  %}
-        {{message}}
+            <p>{{message}}</p>
         {% endfor %}
         <!-- Edit Profile Button -->
-        {% if is_following %}
-        <a href="{% url 'userdetail:unfollow_user' username=user.username %}">Unfollow</a>
-    {% else %}
-        <a href="{% url 'userdetail:follow_user' username=user.username %}">Follow</a>
-    {% endif %}
+        {% if follow_user %}
+            <a href="{% url 'userdetail:follow_user' username=profile.user.username %}">Unfollow</a>
+        {% else %}
+            <a href="{% url 'userdetail:follow_user' username=profile.user.username %}">Follow </a>
+        {% endif %}
         <!-- Following and Followers Count -->
         <div class="flex justify-around text-center text-gray-700 border-t border-gray-200 pt-4">
             <div>
@@ -44,11 +44,11 @@
             </div>
             <div>
                 <h2 class="font-semibold">Following</h2>
-                <p class="text-sm">{{followers}}</p> <!-- Example count -->
+                <p class="text-sm">{{followers}}</p> 
             </div>
             <div>
                 <h2 class="font-semibold">Followers</h2>
-                <p class="text-sm">{{following}}</p> <!-- Example count -->
+                <p class="text-sm">{{following}}</p> 
             </div>
             
         </div>
