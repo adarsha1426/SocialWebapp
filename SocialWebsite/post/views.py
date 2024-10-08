@@ -137,10 +137,3 @@ def delete(request,post_id):
         return render(request, "post/delete_post.html", {'post': post})
     else:
         return HttpResponse(f"{request.user} Post user {post.user.user}You are not authorized to delete this post.")
-
-
-def share():
-    pass
-
-def follow(request,id):
-    pass
