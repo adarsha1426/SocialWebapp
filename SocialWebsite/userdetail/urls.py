@@ -10,6 +10,8 @@ urlpatterns = [
     path('logout',views.logout_view,name="logout"),
     path('change',views.change_password,name='change'),
     path('profile',views.profile,name='profile'),
+    path('user_profile/<str:username>',views.user_profile,name="user_profile"),
+    path('follow/<str:username>',views.follow_user,name='follow_user'),
     path('edit_profile/<str:username>',views.edit_profile,name='edit'),
 
 ]

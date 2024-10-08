@@ -9,6 +9,7 @@ from django.contrib import messages
 from .models import Profile
 from post.models import Post,Comment
 from post.views import postdetail
+from django.urls import reverse
 # Create your views here.
 
 def login_view(request):
@@ -98,10 +99,12 @@ def profile(request):
     # Exclude posts created by the current user's profile
     posts = Post.objects.filter(user=user_profile)
     posts_count=posts.count()
-    print(posts_count)
+    print(profile.count_following)
     return render(request,'userdetail/profile.html',{'profile':profile,
                                                      'posts':posts,
-                                                     "posts_count":posts_count})
+                                                     "posts_count":posts_count,
+                                                     "followers":profile.count_following,
+        "following":profile.count_followed_by,})
 @login_required(login_url='userdetail:login')
 
 def edit_profile(request, username):
@@ -122,3 +125,48 @@ def edit_profile(request, username):
         user_form=UpdateUserForm(instance=user)
 
     return render(request, 'userdetail/profile_edit.html', {'profile_form': profile_form,'user_form':user_form})
+
+def user_profile(request, username):
+    try:
+        user_profile = User.objects.get(username=username)
+        profile = Profile.objects.get(user=user_profile)
+    except (User.DoesNotExist, Profile.DoesNotExist):
+        return render(request, 'userdetail/user_not_found.html')
+    posts = Post.objects.filter(user=profile)
+    posts_count = posts.count()
+        #for follow button  in user_follow
+    follow_user=True
+    context = {
+        'user_profile':user_profile,
+        'search_profile': user_profile,
+        'profile': profile,
+        'posts': posts,
+        "posts_count": posts_count,
+        "follow_user":True,
+        "followers":profile.count_following(),
+        "following":profile.count_followed_by(),
+    }
+    return render(request, 'userdetail/user_profile.html', context)
+def follow_user(request, username): 
+
+    user_to_follow = get_object_or_404(User, username=username)
+    user_profile_to_follow = get_object_or_404(Profile, user=user_to_follow)
+    current_user_profile = get_object_or_404(Profile, user=request.user)
+    follow_user=True
+    if current_user_profile.is_following(user_profile_to_follow):
+        current_user_profile.unfollow(user_profile_to_follow)
+        messages.success(request,"You have unfollowed")
+        follow_user=False
+        print(follow_user)
+    else:
+        current_user_profile.follow(user_profile_to_follow)
+        messages.success(request,"You have followed")
+        follow_user=True
+        print(follow_user)
+    return redirect(reverse(f"userdetail:user_profile",kwargs={"username":user_to_follow}))
+
+
+def share():
+    pass
+
+
