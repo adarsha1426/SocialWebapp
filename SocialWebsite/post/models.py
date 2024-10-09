@@ -37,6 +37,8 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post:your_post', args=[self.id])
     
+    def like_absolute_url(self,**kwargs):
+        return reverse('post:your_post', kwargs={'slug': self.slug})
 
     def __str__(self):
         return f"{self.user} post created on  {self.created} ."
@@ -49,7 +51,6 @@ class Comment(models.Model):
 
     def count_like(self):
         return self.likes.count()
-    
     def get_username(self):
         return f"{self.user}"
 
