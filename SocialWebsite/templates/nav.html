@@ -1,0 +1,64 @@
+{% load widget_tweaks %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    {% tailwind_css %}
+</head>
+<style>
+
+    
+</style>
+<body >
+    <nav class="bg-white shadow-lg  flex  justify-evenly static">
+        <div class="container mx-auto px-4 flex justify-between items-center h-16">
+            <!-- Logo Section -->
+            <div class="logo flex items-center">
+                <img src="" alt="webapplogo" class="h-10 w-10">
+            </div>
+            <div class="home">
+                <a href="{% url 'post:home' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+            </div>
+            <div class="notification">
+                <a href="#" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Notification</a>
+            </div>
+            <div class="home">
+                <a href="{% url 'userdetail:change' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Change Password</a>
+            </div>
+            <div class="home">
+                <a href="{% url 'userdetail:change' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">{% if request.user.is_authenticated is True %}{{request.user.first_name}}{% endif %}</a>
+            </div>
+            <div class="home">
+                <a href="{% url 'post:create_post' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Create Post</a>
+            </div>
+            {% if request.user.is_authenticated %}
+            
+            <div class="home">
+                <a href="{% url 'userdetail:logout' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Logout</a>
+            </div>
+            {% endif %}
+            <!-- Profile Section -->
+            <div class="profile flex items-center">
+                {% if request.user.is_authenticated %}
+                    {% if profile.profile_pic %}
+                        <a href="{% url 'userdetail:profile' %}">
+                            <img class="h-10 w-10 rounded-full" src="{{ profile.profile_pic }}" alt="{{ request.user.username }}">
+                        </a>
+        {% else %}
+        <a href="{% url 'userdetail:profile' %}">
+            <img class="h-10 w-10 rounded-full" src="static\profile_images\default_profile.jpg" alt="{{ request.user.username }}">
+        </a>
+    {% endif %}
+{% else %}
+    <a href="{% url 'userdetail:login' %}">Login</a>
+    <p>hola</p>
+{% endif %}
+            </div>
+        </div>
+    </nav>
+    
+</html>

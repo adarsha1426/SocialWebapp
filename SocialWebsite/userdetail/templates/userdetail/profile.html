@@ -1,0 +1,58 @@
+{% load static %}
+{% include "base.html" %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+{% block content %}
+<body>
+    <div class="max-w-md mx-auto text-center mt-10 space-y-4">
+        <!-- Profile Picture -->
+        <div>
+            <img class="h-24 w-24 rounded-full object-cover mx-auto"
+                 src="{% if profile.profile_pic %}{{ profile.profile_pic.url }}{% else %}{% static 'profile_images/default_profile.jpg' %}{% endif %}" 
+                 alt="{{ profile.user }}">
+        </div>
+
+        <!-- Name, Username, and Bio -->
+        <div>
+            <h1 class="text-xl font-semibold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+            <p class="text-gray-500">@{{ profile.user.username }}</p>
+            {% if profile.date_of_birth  %}
+            <p class="text-gray-600">Date of Birth: {{ profile.date_of_birth }}</p>
+            {% endif %}
+           
+        </div>
+
+        <!-- Edit Profile Button -->
+        <div>
+            <a href="{% url 'userdetail:edit' user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
+                Edit Profile
+            </a>
+        </div>
+
+        <!-- Following and Followers Count -->
+        <div class="flex justify-around text-center text-gray-700 border-t border-gray-200 pt-4">
+            <div>
+                <h2 class="font-semibold"><a href="{% url "post:your_post" profile.user.username %}">Your Posts</a></h2>
+                <p class="text-sm">456</p> <!-- Example count -->
+            </div>
+            <div>
+                <h2 class="font-semibold">Following</h2>
+                <p class="text-sm">123</p> <!-- Example count -->
+            </div>
+            <div>
+                <h2 class="font-semibold">Followers</h2>
+                <p class="text-sm">456</p> <!-- Example count -->
+            </div>
+            
+        </div>
+    </div>
+</body>
+
+{% endblock content %}
+</html>
