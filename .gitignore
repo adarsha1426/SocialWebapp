@@ -7,3 +7,9 @@ db.sqlite3
 # Ignore Python cache files
 __pycache__/
 SocialWebsite/post/__pycache__/
+SocialWebsite/userdetail/__pycache__/
+
+
+
+socialwebapp\SocialWebsite\post\__pycache__
+SocialWebsite\SocialWebsite\__pycache__
