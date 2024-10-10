@@ -29,9 +29,7 @@
             <div class="home">
                 <a href="{% url 'userdetail:change' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Change Password</a>
             </div>
-            <div class="home">
-                <a href="{% url 'userdetail:change' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">{% if request.user.is_authenticated is True %}{{request.user.first_name}}{% endif %}</a>
-            </div>
+            
             <div class="home">
                 <a href="{% url 'post:create_post' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Create Post</a>
             </div>
