@@ -6,54 +6,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Profile Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 {% block content %}
 <body>
-    <div class="max-w-md mx-auto text-center mt-10 space-y-4">
+    <div class="max-w-md mx-auto text-center mt-10 space-y-6">
         <!-- Profile Picture -->
-        <div>
-            <img class="h-24 w-24 rounded-full object-cover mx-auto"
+        <div class="flex flex-col items-center">
+            <img class="h-24 w-24 rounded-full object-cover" 
                  src="{% if profile.profile_pic %}{{ profile.profile_pic.url }}{% else %}{% static 'profile_images/default_profile.jpg' %}{% endif %}" 
                  alt="{{ profile.user }}">
         </div>
 
         <!-- Name, Username, and Bio -->
-        <div>
-            <h1 class="text-xl font-semibold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+        <div class="text-center">
+            <h1 class="text-2xl font-bold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
             <p class="text-gray-500">@{{ profile.user.username }}</p>
-            {% if profile.date_of_birth  %}
+            {% if profile.date_of_birth %}
             <p class="text-gray-600">Date of Birth: {{ profile.date_of_birth }}</p>
             {% endif %}
-           
         </div>
-        {% for message in messages  %}
-            <p>{{message}}</p>
-        {% endfor %}
-        <!-- Edit Profile Button -->
-        {% if follow_user %}
-            <a href="{% url 'userdetail:follow_user' username=profile.user.username %}">Unfollow</a>
-        {% else %}
-            <a href="{% url 'userdetail:follow_user' username=profile.user.username %}">Follow </a>
-        {% endif %}
-        <!-- Following and Followers Count -->
+
+        <!-- Messages -->
+        <div>
+            {% for message in messages %}
+                <p class="text-sm text-red-500">{{ message }}</p>
+            {% endfor %}
+        </div>
+
+        <!-- Follow/Unfollow Button -->
+        <div>
+            {% if follow_user %}
+                <a href="{% url 'userdetail:follow_user' username=profile.user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
+                    Unfollow
+                </a>
+            {% else %}
+                <a href="{% url 'userdetail:follow_user' username=profile.user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
+                    Follow
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Posts, Followers, Following Count -->
         <div class="flex justify-around text-center text-gray-700 border-t border-gray-200 pt-4">
             <div>
-                <h2 class="font-semibold"><a href="{% url "post:your_post" profile.user.id %}">Your Posts</a></h2>
-                <p class="text-sm">{{posts_count}}</p> 
+                <h2 class="font-semibold">Posts</h2>
+                <p class="text-sm">{{ posts_count }}</p>
             </div>
             <div>
-                <h2 class="font-semibold">Following</h2>
-                <p class="text-sm">{{followers}}</p> 
+                <h2 class="font-semibold">Following</h2> 
+                <p class="text-sm">{{ following }}</p>
             </div>
             <div>
                 <h2 class="font-semibold">Followers</h2>
-                <p class="text-sm">{{following}}</p> 
+                <p class="text-sm">{{ followers }}</p>
             </div>
-            
+        </div>
+
+        <!-- Posts Section -->
+        <div class="space-y-6 mt-8">
+            {% for post in posts %}
+            <div class="flex items-center space-x-2 mb-4">
+                <!-- Profile Picture -->
+                {% if post.user.profile_pic %}
+                <img class="mr-0 pr-0 h-10 w-10 rounded-full" src="{{ post.user.profile_pic }}" alt="{{ post.user.username }}">
+                {% else %}
+                <img class="mr-0 pr-0 h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ post.user.username }}">
+                {% endif %}
+                
+                <!-- Username and Post Details -->
+                <div class="flex flex-col">
+                    <h2 class="font-semibold mr-0 pr-0 h-10 w-10  text-lg">{{ post.user }}</h2>
+                    
+                    <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
+                </div>
+                
+               
+            </div>
+               
+            <div class="bg-white shadow-md rounded-lg p-6 ">
+                <!-- Post Title or Content -->
+                <h2 class="text-lg font-semibold">{{ post.title }}</h2>
+                <p class="text-gray-700">{{ post.body }}</p>
+                
+                <!-- Post Image -->
+                {% if post.image %}
+                <img class="w-full h-64 object-cover mt-4 rounded-lg mr-0 pr-0 h-10 w-10" src="{{ post.image.url }}" alt="{{ post.title }}">
+                {% endif %}
+
+                <!-- Actions (Like, Comment, Share) -->
+                <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+                    <div class="flex space-x-4">
+                        <a href="{% url "post:like" post_slug=post.slug %}" class="hover:text-blue-500">Like {% if post.likes.count is 0 %}{% else %}{{ post.likes.count}}{% endif %}</a>
+                        <a href="{% url 'post:create_comment' post_slug=post.slug %}" class="hover:text-blue-500">Comment</a>
+                        <a href="#" class="hover:text-blue-500">Share</a>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="bg-gray-50 rounded-lg p-4 mt-4">
+                <h3 class="font-semibold text-gray-700">Comments ({{ comment_count }})</h3>
+                {% for comment in comments %}
+                <div class="mt-2">
+                    <strong>{{ comment.user.user.first_name }} {{ comment.user.user.last_name }}</strong>: {{ comment.body }}<br>
+                    <small class="text-gray-500">Posted on {{ comment.created_at }}</small>
+                </div>
+               
+                {% empty %}
+                <p class="text-sm text-gray-500">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
         </div>
     </div>
 </body>
-
 {% endblock content %}
 </html>

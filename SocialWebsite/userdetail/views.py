@@ -132,23 +132,27 @@ def user_profile(request, username):
         profile = Profile.objects.get(user=user_profile)
     except (User.DoesNotExist, Profile.DoesNotExist):
         return render(request, 'userdetail/user_not_found.html')
+
+    # Check if the logged-in user is following the current profile
+    current_user_profile = Profile.objects.get(user=request.user)
+    is_following = current_user_profile.is_following(profile)
+
     posts = Post.objects.filter(user=profile)
     posts_count = posts.count()
-        #for follow button  in user_follow
-    follow_user=True
+
     context = {
-        'user_profile':user_profile,
+        'user_profile': user_profile,
         'search_profile': user_profile,
         'profile': profile,
         'posts': posts,
-        "posts_count": posts_count,
-        "follow_user":True,
-        "followers":profile.count_following(),
-        "following":profile.count_followed_by(),
+        'posts_count': posts_count,
+        'is_following': is_following,  # Pass the follow status dynamically
+        'followers': profile.count_followed_by(),
+        'following': profile.count_following(),
     }
     return render(request, 'userdetail/user_profile.html', context)
-def follow_user(request, username): 
 
+def follow_user(request, username): 
     user_to_follow = get_object_or_404(User, username=username)
     user_profile_to_follow = get_object_or_404(Profile, user=user_to_follow)
     current_user_profile = get_object_or_404(Profile, user=request.user)
@@ -165,6 +169,12 @@ def follow_user(request, username):
         print(follow_user)
     return redirect(reverse(f"userdetail:user_profile",kwargs={"username":user_to_follow}))
 
+def custom_profile(request,username):
+    user_to_follow = get_object_or_404(User, username=username)
+    user_profile_to_follow = get_object_or_404(Profile, user=user_to_follow)
+    current_user_profile = get_object_or_404(Profile, user=request.user)
+    context={'profile':current_user_profile}
+    return render(request,'userdetail/user_profile',context)
 
 def share():
     pass

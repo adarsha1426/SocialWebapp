@@ -17,9 +17,7 @@
         
         <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
     </div>
-    <div class="flex flex-col">
-        <a href="{% url "post:post" post_slug=post.slug %}">View Post</a>
-    </div>
+    
    
 </div>
 
@@ -29,7 +27,7 @@
     {% if post.image %}
     <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
     {% endif %}
-    <p>{{post.slug}}</p>
+  
     {% if request.user %}{% endif %}
     <a href="{% url "post:like" post_slug=post.slug %}">Like</a>
 

@@ -1,8 +1,17 @@
-
-<ul>
+<ul class="max-w-xs space-y-2">
     {% for user in user_profile %}
-        <li><a href="{% url "userdetail:user_profile" username=user.username%}">{{ user.username }}</a></li>
+        <li class="flex items-center p-2 border-b border-gray-200 hover:bg-gray-100 transition duration-200">
+            <a href="{% url 'userdetail:user_profile' username=user.username %}" class="flex items-center w-full">
+                <img src="{{ user.profile_pic.url }}" alt="{{ user.username }}'s profile picture" class="h-10 w-10 rounded-full mr-3">
+                <div class="flex flex-col">
+                    <span class="font-semibold text-gray-800">{{ user.username }}</span>
+                    {% if user.bio %}
+                        <span class="text-sm text-gray-600">{{ user.bio }}</span>
+                    {% endif %}
+                </div>
+            </a>
+        </li>
     {% empty %}
-        <li>No users found.</li>
+        <li class="text-gray-500">No users found.</li>
     {% endfor %}
 </ul>
