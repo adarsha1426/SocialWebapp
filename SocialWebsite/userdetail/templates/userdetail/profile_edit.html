@@ -40,6 +40,10 @@
                             {{ profile_form.profile_pic|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" }}
                         </div>
                         <div class="mb-4">
+                            <label for="{{ profile_form.profile_pic.id_for_label }}" class="block text-gray-700 font-semibold mb-2">{{ profile_form.bio.label }}</label>
+                            {{ profile_form.bio|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+                        </div>
+                        <div class="mb-4">
                             <label for="{{ profile_form.date_of_birth.id_for_label }}" class="block text-gray-700 font-semibold mb-2">{{ profile_form.date_of_birth.label }}</label>
                             {{ profile_form.date_of_birth|add_class:"w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" }}
                         </div>

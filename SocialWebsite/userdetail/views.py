@@ -169,6 +169,7 @@ def follow_user(request, username):
         print(follow_user)
     return redirect(reverse(f"userdetail:user_profile",kwargs={"username":user_to_follow}))
 
+#for searching custom user
 def custom_profile(request,username):
     user_to_follow = get_object_or_404(User, username=username)
     user_profile_to_follow = get_object_or_404(Profile, user=user_to_follow)

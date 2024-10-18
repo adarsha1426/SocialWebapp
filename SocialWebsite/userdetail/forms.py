@@ -59,7 +59,7 @@ class RegisterForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model=Profile
-        fields=['profile_pic','date_of_birth']
+        fields=['profile_pic','date_of_birth','bio',]
 
 class UpdateUserForm(forms.ModelForm):
     class Meta:

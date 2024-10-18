@@ -6,6 +6,7 @@ from .models import Post,Comment
 from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect,HttpResponse
+from django.http import JsonResponse
 
 from django.db.models import Count
 
@@ -87,11 +88,16 @@ def like(request,post_slug):
     if request.user.profile in post.likes.all():
         post.likes.remove(request.user.profile)
         msg=False
+       
     else:
         post.likes.add(request.user.profile)
         msg=True
-
-    return redirect('post:home')
+        
+    like_count=post.count_like()
+    return JsonResponse({
+        'msg': msg,
+        'like_count': like_count,
+    })
 
 #Creating comment
 @login_required
