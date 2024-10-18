@@ -71,3 +71,5 @@ SocialWebsite/post/__pycache__/views.cpython-311.pyc
 SocialWebsite/userdetail/__pycache__/models.cpython-311.pyc
 SocialWebsite/post/__pycache__/models.cpython-311.pyc
 SocialWebsite/post/__pycache__/urls.cpython-311.pyc
+SocialWebsite\post\templates\base.html
+SocialWebsite/userdetail/__pycache__/
