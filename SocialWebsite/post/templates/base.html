@@ -6,39 +6,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
+    
     {% tailwind_css %}
 </head>
-<style>
-
-    
-</style>
-<body >
-    <nav class="bg-white shadow-lg  flex  justify-evenly static">
-        <div class="container mx-auto px-4 flex justify-between items-center h-16">
+<body class="font-roboto">
+    <nav class="bg-white flex justify-center static font-sans">
+        <div class="container w-full max-w-[810.545px] flex justify-between items-center h-16">
             <!-- Logo Section -->
             <div class="logo flex items-center">
-                <img src="" alt="webapplogo" class="h-10 w-10">
+                <img src="{% static "logo\webapp-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12">
             </div>
+
+            <!-- Home Link -->
             <div class="home">
-                <a href="{% url 'post:home' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                <a href="{% url 'post:home' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"><img src="{% static 'logo\home-logo.png' %}" alt="Home Logo" class="h-10 w-10"></a>
             </div>
+
+            <!-- Notification Link -->
             <div class="notification">
-                <a href="#" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Notification</a>
+                <a href="#" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"><img src="{% static 'logo\notification-logo.png' %}" alt="notification Logo" class="h-10 w-10"></a>
             </div>
+
+            <!-- Create Post Link -->
             <div class="home">
-                <a href="{% url 'userdetail:change' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Change Password</a>
+                <a href="{% url 'post:create_post' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"><img src="{% static 'logo\add-logo.png' %}" alt="add-post Logo" class="h-10 w-10"></a>
             </div>
-            
-            <div class="home">
-                <a href="{% url 'post:create_post' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Create Post</a>
-            </div>
+
+            <!-- Logout Link -->
             {% if request.user.is_authenticated %}
-            
             <div class="home">
-                <a href="{% url 'userdetail:logout' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Logout</a>
+                <a href="{% url 'userdetail:logout' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"><img src="{% static 'logo\logout-logo.png' %}" alt="Logout logo" class="h-10 w-10"></a>
             </div>
             {% endif %}
+
             <!-- Profile Section -->
             <div class="profile flex items-center">
                 {% if request.user.is_authenticated %}
@@ -46,17 +46,16 @@
                         <a href="{% url 'userdetail:profile' %}">
                             <img class="h-10 w-10 rounded-full" src="{{ profile.profile_pic }}" alt="{{ request.user.username }}">
                         </a>
-        {% else %}
-        <a href="{% url 'userdetail:profile' %}">
-            <img class="h-10 w-10 rounded-full" src="static\profile_images\default_profile.jpg" alt="{{ request.user.username }}">
-        </a>
-    {% endif %}
-{% else %}
-    <a href="{% url 'userdetail:login' %}">Login</a>
-    <p>hola</p>
-{% endif %}
+                    {% else %}
+                        <a href="{% url 'userdetail:profile' %}">
+                            <img class="h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ request.user.username }}">
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'userdetail:login' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                {% endif %}
             </div>
         </div>
     </nav>
-    
+</body>
 </html>

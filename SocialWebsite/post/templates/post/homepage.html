@@ -10,7 +10,7 @@
 </head>
 <body >
     <div class="flex justify-center w-full">
-    <div class=" felx justify-center max-w-md mt-11 pt-10  bg-blue-500 p-6 rounded-lg shadow-md ">
+    <div class=" felx justify-center w-[638.545px]   mt-11 pt-10  bg-blue-500 p-6 rounded-lg shadow-md ">
        
       
         <!-- Posted Items Section -->
@@ -26,14 +26,12 @@
                     {% endif %}
                     
                     <!-- Username and Post Details -->
-                    <div class="flex flex-col">
-                        
-                        <h2 class="font-semibold text-lg">  <a href="{% url 'userdetail:userprofile' username=profile.user %}" class="flex items-center w-full">{{ post.user }}</h2></a>
-                        
-                        <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
+                    <div class="flex flex-col ml-3">
+                        <h2 class="font-semibold text-lg text-gray-800"><a href="{% url 'userdetail:user_profile' username=post.user.user %}" class="hover:underline">{{ post.user }}</h2>
+                        <p class="text-sm text-gray-500">Posted by <a href="{% url 'userdetail:user_profile' username=post.user.user %}" class="hover:underline">{{ post.user }}</a> on {{ post.created | date }}</p>
                     </div>
                     <div class="flex flex-col">
-                        <a href="{% url "post:post" post_slug=post.slug %}">View Post</a>
+                        <a href="{% url "post:post" post_slug=post.slug %}" class="text-blue-500 hover:underline">View Post</a>
                     </div>
                    
                 </div>
@@ -46,9 +44,9 @@
                 {% endif %}
        
                 {% if msg is True%}
-                <a href="{% url "post:like" post_slug=post.slug %}">Liked {{post.count_like}}</a>
+                <a href="{% url "post:like" post_slug=post.slug %}" id="likebutton" onclick="toggleLike();">Liked {{post.count_like}}</a>
                 {% else %}
-                <a href="{% url "post:like" post_slug=post.slug %}">Like {{post.count_like}}</a>
+                <a href="{% url "post:like" post_slug=post.slug %}" id="likebutton" onclick="toggleLike();">UnLike {{post.count_like}}</a>
                 {% endif %}
                 
                 <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
@@ -58,13 +56,43 @@
             {% endfor %}
         </div>
     </div>
-    <div class="felx justify-center h-1/2 max-w-md mt-11 ml-11 pt-14  bg-green-600 p-6 rounded-lg shadow-md" >
-        <a href="">Suggested for you</a>
+    <div class="felx justify-center h-1/2  min-w-1/3 mt-11 ml-11 pt-14  bg-blue-600 p-6 rounded-lg shadow-md" >
+        <p>Suggested for you</p>
          
-         {% include "post/suggest_user.html" %}
+        <ul class="max-w-xs space-y-2">
+            {% for user in user_profile %}
+                <li class="flex items-center p-2 border-b border-gray-200 hover:bg-gray-100 transition duration-200">
+                    <a href="{% url 'userdetail:user_profile' username=user.username %}" class="flex items-center w-full">
+                        <img src="{{ user.profile_pic.url }}" alt="{{ user.username }}'s profile picture" class="h-10 w-10 rounded-full mr-3">
+                        <div class="flex flex-col">
+                            <span class="font-semibold text-gray-800">{{ user.username }}</span>
+                            {% if user.bio %}
+                                <span class="text-sm text-gray-600">{{ user.bio }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </li>
+            {% empty %}
+                <li class="text-gray-500">No users found.</li>
+            {% endfor %}
+        </ul>
             
     </div>
+   
 </div>
 {% endblock content %}
 </body>
 </html>
+<script>
+    function toggleLike() {
+        var likeButton = document.getElementById("likebutton");
+        var likeText = likeButton.innerText.trim(); // Get the text content inside the button
+
+        // Toggle the like/unlike text
+        if (likeText.startsWith("Like")) {
+            likeButton.innerText = likeText.replace("Like", "Unlike");
+        } else {
+            likeButton.innerText = likeText.replace("Unlike", "Like");
+        }
+    }
+</script>
