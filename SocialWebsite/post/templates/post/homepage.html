@@ -7,6 +7,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src= 
+    "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> 
+        </script>
 </head>
 <body >
     <div class="flex justify-center w-full">
@@ -43,10 +46,13 @@
                 <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
                 {% endif %}
        
-                {% if msg is True%}
-                <a href="{% url "post:like" post_slug=post.slug %}" id="likebutton" onclick="toggleLike();">Liked {{post.count_like}}</a>
+                
+                {% if request.user.profile in post.likes.all %}
+                
+                <a href="{% url 'post:like' post_slug=post.slug %}">Unlike<img src="{% static "logo\unlike-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
                 {% else %}
-                <a href="{% url "post:like" post_slug=post.slug %}" id="likebutton" onclick="toggleLike();">UnLike {{post.count_like}}</a>
+               
+                <a href="{% url 'post:like' post_slug=post.slug %}">Like <img src="{% static "logo\like-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
                 {% endif %}
                 
                 <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
@@ -83,16 +89,4 @@
 {% endblock content %}
 </body>
 </html>
-<script>
-    function toggleLike() {
-        var likeButton = document.getElementById("likebutton");
-        var likeText = likeButton.innerText.trim(); // Get the text content inside the button
 
-        // Toggle the like/unlike text
-        if (likeText.startsWith("Like")) {
-            likeButton.innerText = likeText.replace("Like", "Unlike");
-        } else {
-            likeButton.innerText = likeText.replace("Unlike", "Like");
-        }
-    }
-</script>

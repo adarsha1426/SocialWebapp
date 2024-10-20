@@ -94,11 +94,11 @@ def like(request,post_slug):
         msg=True
         
     like_count=post.count_like()
-    return JsonResponse({
-        'msg': msg,
-        'like_count': like_count,
-    })
-
+    # return JsonResponse({
+    #     "msg":msg,
+    #     "like_count":like_count,
+    # })
+    return redirect('post:home')
 #Creating comment
 @login_required
 def create_comment(request, post_slug):

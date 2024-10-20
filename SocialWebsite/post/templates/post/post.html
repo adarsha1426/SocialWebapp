@@ -28,9 +28,19 @@
     <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
     {% endif %}
   
-    {% if request.user %}{% endif %}
-    <a href="{% url "post:like" post_slug=post.slug %}">Like</a>
-
+     
+    {% if request.user.profile in post.likes.all %}
+                
+    <a href="{% url 'post:like' post_slug=post.slug %}">Unlike<img src="{% static "logo\unlike-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+    {% else %}
+   
+    <a href="{% url 'post:like' post_slug=post.slug %}">Like <img src="{% static "logo\like-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+    {% endif %}
+    
+    <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
+    <a href="#">Share</a>
+    
+</div>
     <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
     <a href="#">Share</a>
     <p>likes: {{post.count_like}}</p>
