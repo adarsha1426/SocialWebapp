@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
 </head>
 {% block content %}
 <body>
@@ -37,15 +37,22 @@
 
         <!-- Follow/Unfollow Button -->
         <div>
-            {% if follow_user %}
+        
+                {% if is_following is True %}
                 <a href="{% url 'userdetail:follow_user' username=profile.user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
+                    
                     Unfollow
                 </a>
-            {% else %}
+                {% else %}
                 <a href="{% url 'userdetail:follow_user' username=profile.user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
                     Follow
                 </a>
-            {% endif %}
+
+                {% endif %}
+                
+            
+                
+            
         </div>
 
         <!-- Posts, Followers, Following Count -->
@@ -95,10 +102,21 @@
                 <img class="w-full h-64 object-cover mt-4 rounded-lg mr-0 pr-0 h-10 w-10" src="{{ post.image.url }}" alt="{{ post.title }}">
                 {% endif %}
 
-                <!-- Actions (Like, Comment, Share) -->
+                <!-- Like, Comment, Share -->
                 <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
                     <div class="flex space-x-4">
-                        <a href="{% url "post:like" post_slug=post.slug %}" class="hover:text-blue-500">Like {% if post.likes.count is 0 %}{% else %}{{ post.likes.count}}{% endif %}</a>
+                       
+                        {% if request.user.profile in post.likes.all %}
+                
+                        <a href="{% url 'post:like' post_slug=post.slug %}" class="hover:text-blue-500">Unlike<img src="{% static "logo\unlike-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+                        {% else %}
+                       
+                        <a href="{% url 'post:like' post_slug=post.slug %}" class="hover:text-blue-500">Like <img src="{% static "logo\like-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+                        {% endif %}
+                        
+                        
+                        
+                    
                         <a href="{% url 'post:create_comment' post_slug=post.slug %}" class="hover:text-blue-500">Comment</a>
                         <a href="#" class="hover:text-blue-500">Share</a>
                     </div>
@@ -108,11 +126,12 @@
 
             <!-- Comments Section -->
             <div class="bg-gray-50 rounded-lg p-4 mt-4">
-                <h3 class="font-semibold text-gray-700">Comments ({{ comment_count }})</h3>
+                
                 {% for comment in comments %}
                 <div class="mt-2">
                     <strong>{{ comment.user.user.first_name }} {{ comment.user.user.last_name }}</strong>: {{ comment.body }}<br>
-                    <small class="text-gray-500">Posted on {{ comment.created_at }}</small>
+                    <small class="text-gray-500">Posted on {{ comment.created_at }}</small> 
+                    {% comment %} comment- issue {% endcomment %}
                 </div>
                
                 {% empty %}

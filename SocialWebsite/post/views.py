@@ -94,11 +94,8 @@ def like(request,post_slug):
         msg=True
         
     like_count=post.count_like()
-    # return JsonResponse({
-    #     "msg":msg,
-    #     "like_count":like_count,
-    # })
-    return redirect('post:home')
+    referer = request.META.get('HTTP_REFERER', '/') # referer is used to redirect to that same page
+    return redirect(referer)
 #Creating comment
 @login_required
 def create_comment(request, post_slug):
@@ -130,7 +127,7 @@ def your_post(request, id):
 def delete_post(request,post_id):
     post=get_object_or_404(Post,id=post_id)
     print(post.user)
-    print(f"reuested user: {request.user}")
+    print(f"requested user: {request.user}")
     if post.user.user==request.user:
         post.delete()
         return redirect('post:home')

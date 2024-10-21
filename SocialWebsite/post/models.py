@@ -35,7 +35,7 @@ class Post(models.Model):
         return self.user
 
     def get_absolute_url(self):
-        return reverse('post:your_post', args=[self.id])
+        return reverse('post:your_post', args=[self.slug])
     
     def like_absolute_url(self,**kwargs):
         return reverse('post:your_post', kwargs={'slug': self.slug})
