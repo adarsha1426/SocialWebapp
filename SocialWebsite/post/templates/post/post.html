@@ -10,15 +10,11 @@
     {% else %}
     <img class="h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ post.user.username }}">
     {% endif %}
-    
     <!-- Username and Post Details -->
     <div class="flex flex-col">
         <h2 class="font-semibold text-lg">{{ post.user }}</h2>
-        
         <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
     </div>
-    
-   
 </div>
 
     <!-- Post Content -->
@@ -29,14 +25,11 @@
     {% endif %}
   
      
-    {% if request.user.profile in post.likes.all %}
-                
+    {% if request.user.profile in post.likes.all %}  
     <a href="{% url 'post:like' post_slug=post.slug %}">Unlike<img src="{% static "logo\unlike-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
     {% else %}
-   
     <a href="{% url 'post:like' post_slug=post.slug %}">Like <img src="{% static "logo\like-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
     {% endif %}
-    
     <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
     <a href="#">Share</a>
     
