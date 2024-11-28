@@ -5,7 +5,6 @@ from .models import Profile
 class LoginForm(forms.Form):
     username=forms.CharField()
     password=forms.CharField(label="Password", widget=forms.PasswordInput)
-
     username.widget.attrs.update({"class": "w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"})
     password.widget.attrs.update({"class": "w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"})
 
@@ -65,3 +64,5 @@ class UpdateUserForm(forms.ModelForm):
     class Meta:
         model=User
         fields=['first_name','last_name','username']
+
+    

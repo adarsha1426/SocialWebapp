@@ -161,13 +161,16 @@ def follow_user(request, username):
         current_user_profile.unfollow(user_profile_to_follow)
         messages.success(request,"You have unfollowed")
         follow_user=False
+        referer = request.META.get('HTTP_REFERER', '/')
         print(follow_user)
     else:
         current_user_profile.follow(user_profile_to_follow)
         messages.success(request,"You have followed")
         follow_user=True
         print(follow_user)
-    return redirect(reverse(f"userdetail:user_profile",kwargs={"username":user_to_follow}))
+        referer = request.META.get('HTTP_REFERER', '/') # referer is used to redirect to that same page
+    return redirect(referer)
+    # return redirect(reverse(f"userdetail:user_profile",kwargs={"username":user_to_follow}))
 
 #for searching custom user
 def custom_profile(request,username):
@@ -177,7 +180,8 @@ def custom_profile(request,username):
     context={'profile':current_user_profile}
     return render(request,'userdetail/user_profile',context)
 
-def share():
-    pass
+
+
+
 
 

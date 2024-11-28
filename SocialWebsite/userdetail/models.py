@@ -12,7 +12,7 @@ class Profile(models.Model):
     "self", 
     related_name="followed_by", 
     symmetrical=False, 
-    blank=True
+    blank=True,
 )#This indicates a relationship between instances of the same model (i.e., a user can follow other users from the same model).
     
     def __str__(self) :
