@@ -10,3 +10,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model=Comment
         fields=['body',]
+
+
+class ShareEmailForm(forms.Form):
+    to=forms.EmailField()
+    message=forms.CharField(required=False,widget=forms.Textarea)

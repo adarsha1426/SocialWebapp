@@ -12,6 +12,11 @@ from django.db.models import Count
 
 from django.conf import settings
 from django.contrib import messages
+#for email
+from django.core.mail import send_mail
+from .forms import ShareEmailForm
+from django.http import HttpRequest
+from SocialWebsite.settings import EMAIL_HOST_USER
 
 # Create your views here.
 @login_required(login_url='userdetail:login')
@@ -140,3 +145,33 @@ def delete(request,post_id):
         return render(request, "post/delete_post.html", {'post': post})
     else:
         return HttpResponse(f"{request.user} Post user {post.user.user}You are not authorized to delete this post.")
+
+
+def share_form(request,post_slug):
+    post=get_object_or_404(Post,slug=post_slug)
+    sent=False
+    form=ShareEmailForm()
+    if request.method=="POST":
+        form=ShareEmailForm(request.POST)
+        if form.is_valid():
+            post_url=request.build_absolute_uri(post.get_absolute_url())
+            name=f"{request.user}"
+            to=form.cleaned_data['to']
+            comment=form.cleaned_data['message']
+            message = (
+                f"This post was shared by your friend {request.user.username}.\n\n"
+                f"Post URL: {post_url}\n\n"
+                f"Message: {comment}"
+            )
+            subject="Social web app post share via email"
+            send_mail(
+                    subject,                   
+                    message,                   
+                    EMAIL_HOST_USER,  
+                    [to],                      
+                    fail_silently=False         # Raise exceptions if email fails
+)
+            
+            referer = request.META.get('HTTP_REFERER', '/') # referer is used to redirect to that same page
+            return redirect(referer)
+    return render(request,'post/share_email_form.html',{'form':form,'post':post})
