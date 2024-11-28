@@ -35,7 +35,7 @@
     
 </div>
     <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
-    <a href="#">Share</a>
+    <a href="{% url "post:share_email_form" post_slug=post.slug %}">Share</a>
     <p>likes: {{post.count_like}}</p>
     </div>
        <div class="comments-section">

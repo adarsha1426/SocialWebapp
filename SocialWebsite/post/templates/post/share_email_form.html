@@ -1,0 +1,45 @@
+{% load widget_tweaks %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Share Form</title>
+
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <!-- Form Container -->
+    <div class="bg-white shadow-md rounded-lg p-6 max-w-lg w-full">
+        <h1 class="text-2xl font-semibold text-center mb-6">Share Post via Email</h1>
+
+        <form action="{% url 'post:share_email_form' post_slug=post.slug %}" method="POST" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Add borders to form fields -->
+            <div>
+                {{ form.to.label_tag }}
+                {{ form.to|add_class:"border border-gray-300 rounded-md w-full px-3 py-2 focus:ring-blue-500 focus:border-blue-500" }}
+            </div>
+
+            <div>
+                {{ form.message.label_tag }}
+                {{ form.message|add_class:"border border-gray-300 rounded-md w-full px-3 py-2 focus:ring-blue-500 focus:border-blue-500" }}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <input type="submit" value="Send" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md cursor-pointer">
+            </div>
+        </form>
+
+        <!-- Success Message -->
+        {% if sent %}
+            <p class="text-green-600 text-center mt-4">Email sent successfully!</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
