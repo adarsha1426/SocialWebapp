@@ -37,6 +37,9 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post:your_post', args=[self.slug])
     
+    def get_sharedpost_url(self):
+        return reverse('post:post',args=[self.slug])
+    
     def like_absolute_url(self,**kwargs):
         return reverse('post:your_post', kwargs={'slug': self.slug})
 

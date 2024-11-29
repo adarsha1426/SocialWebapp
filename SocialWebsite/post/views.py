@@ -146,7 +146,7 @@ def delete(request,post_id):
     else:
         return HttpResponse(f"{request.user} Post user {post.user.user}You are not authorized to delete this post.")
 
-
+@login_required
 def share_form(request,post_slug):
     post=get_object_or_404(Post,slug=post_slug)
     sent=False
@@ -154,7 +154,7 @@ def share_form(request,post_slug):
     if request.method=="POST":
         form=ShareEmailForm(request.POST)
         if form.is_valid():
-            post_url=request.build_absolute_uri(post.get_absolute_url())
+            post_url=request.build_absolute_uri(post.get_sharedpost_url())
             name=f"{request.user}"
             to=form.cleaned_data['to']
             comment=form.cleaned_data['message']
