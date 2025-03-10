@@ -12,6 +12,7 @@ urlpatterns = [
     path('profile',views.profile,name='profile'),
     path('user_profile/<str:username>',views.user_profile,name="user_profile"),
     path('custom_profile/<str:username>',views.custom_profile,name="custom_search_profile"),
+    path('search',views.search_user,name="search_user"),
     path('follow/<str:username>',views.follow_user,name='follow_user'),
     path('edit_profile/<str:username>',views.edit_profile,name='edit'),
 

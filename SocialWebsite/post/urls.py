@@ -14,5 +14,6 @@ urlpatterns = [
     path('delete_post/<slug:post_slug>',views.delete_post,name="delete_post"),
     path('delete/<slug:post_slug>',views.delete,name="delete"),
     path('share_email_form/<slug:post_slug>',views.share_form,name="share_email_form"),
+   
     path('',include('userdetail.urls'),name="userdetail"),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

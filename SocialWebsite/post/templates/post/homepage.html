@@ -69,28 +69,27 @@
         <ul class="max-w-xs space-y-2">
             {% for user in user_profile %}
                 <li class="flex items-center p-2 border-b border-gray-200 hover:bg-gray-100 transition duration-200">
-                    {% if user.profile.profile_pic %}
-                    <img class="h-10 w-10 rounded-full" src="{{ user.profile_pic }}" alt="{{ post.user.username }}">
-                    {% else %}
-                    <img class="h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ post.user.username }}">
-                    {% endif %}
-                    <a href="{% url 'userdetail:user_profile' username=user.username %}" class="flex items-center w-full">
-                        <img src="{{ user.profile.profile_pic }}" alt="{{ user.username }}'s profile picture" class="h-10 w-10 rounded-full mr-3">
+                    
+                    <a href="{% url 'userdetail:user_profile' username=user.username %}" class="flex-shrink-0">
+                        {% if user.profile.profile_pic %}
+                        <img class="h-12 w-12 rounded-full object-cover" src="{{ user.profile.profile_pic }}" alt="{{ user.username }}">
+                        {% else %}
+                        <img class="h-12 w-12 rounded-full object-cover" src="{% static 'profile_images/default_profile.jpg' %}" alt="Default Profile Picture">
+                        {% endif %}
+                    </a>
                         <div class="flex flex-col">
                             <span class="font-semibold text-gray-800">{{ user.username }}</span>
                             {% if user.bio %}
                                 <span class="text-sm text-gray-600">{{ user.bio }}</span>
                             {% endif %}
                         </div>
-                    </a>
+                 
                 </li>
             {% empty %}
                 <li class="text-gray-500">No users found.</li>
             {% endfor %}
-        </ul>
-            
+        </ul>  
     </div>
-   
 </div>
 {% endblock content %}
 </body>

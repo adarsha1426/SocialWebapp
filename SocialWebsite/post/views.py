@@ -38,7 +38,7 @@ def home(request):
     
     # Fetching full model instances instead of values()
     profile_objects = Profile.objects.exclude(user=current_user)
-    user_profile = User.objects.exclude(id=current_user.id).values() 
+    user_profile = User.objects.exclude(id=current_user.id)
     context = {
         'posts': posts,
         'profile': profile,

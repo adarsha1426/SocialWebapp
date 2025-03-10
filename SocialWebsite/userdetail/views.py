@@ -178,8 +178,15 @@ def custom_profile(request,username):
     user_profile_to_follow = get_object_or_404(Profile, user=user_to_follow)
     current_user_profile = get_object_or_404(Profile, user=request.user)
     context={'profile':current_user_profile}
-    return render(request,'userdetail/user_profile',context)
+    return render(request,'userdetail/user_profile.html',context)
 
+def search_user(request):
+    if request.method=='GET':
+        q=request.GET.get('q')
+        #__contains is equivalent to Select * where username==q
+        users=User.objects.filter(username__icontains=q)
+        
+        return render(request,"userdetail/search.html",{'users':users})
 
 
 

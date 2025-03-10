@@ -1,0 +1,53 @@
+{% load widget_tweaks %}
+{% load static tailwind_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found User Page</title>
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet"> <!-- Ensure your Tailwind CSS file is included -->
+</head>
+{% include "base.html" %}
+{% block content %}
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-lg rounded-xl p-8 max-w-lg w-full">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6 text-center">Found Users</h1>
+        {% if users %}
+        <ul class="space-y-4">
+            {% for user in users %}
+            <li class="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition duration-300">
+                <!-- User profile picture -->
+                <a href="{% url 'userdetail:user_profile' username=user.username %}" class="flex-shrink-0">
+                    {% if user.profile.profile_pic %}
+                    <img class="h-12 w-12 rounded-full object-cover" src="{{ user.profile.profile_pic }}" alt="{{ user.username }}">
+                    {% else %}
+                    <img class="h-12 w-12 rounded-full object-cover" src="{% static 'profile_images/default_profile.jpg' %}" alt="Default Profile Picture">
+                    {% endif %}
+                </a>
+
+                <!-- User details -->
+                <div class="flex-grow">
+                    <a href="{% url 'userdetail:user_profile' username=user.username %}" class="block">
+                        <span class="font-semibold text-lg text-gray-800">{{ user.first_name }} {{ user.last_name }}</span>
+                    </a>
+                    <span class="text-gray-500">{{ user.username }}</span>
+                </div>
+
+                
+                <div>
+                    <a href="{% url 'userdetail:user_profile' username=user.username %}" class="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-600 transition duration-300">
+                        View Profile
+                    </a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <h2 class="text-xl font-semibold text-center text-gray-600 mt-4">User not found.</h2>
+        {% endif %}
+    </div>
+</body>
+{% endblock content %}
+</html>

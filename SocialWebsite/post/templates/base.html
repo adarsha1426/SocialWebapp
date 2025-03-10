@@ -39,6 +39,14 @@
                 <a href="{% url 'userdetail:logout' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"><img src="{% static 'logo\logout-logo.png' %}" alt="Logout logo" class="h-10 w-10"></a>
             </div>
             {% endif %}
+            {% if request.user.is_authenticated %}
+            <div class="home">
+                <form action="{% url "userdetail:search_user" %}" method="GET">
+                    <input type="text" name="q" placeholder="Search User"id="">
+                </form>
+                
+            </div>
+            {% endif %}
 
             <!-- Profile Section -->
             <div class="profile flex items-center">
