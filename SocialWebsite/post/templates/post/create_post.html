@@ -1,5 +1,19 @@
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ post_form.as_p }}  <!-- Render form fields including the image field -->
-    <button type="submit">Submit</button>
-</form>
+{% load static %}
+{% include "base.html" %}
+{% block content %}
+<div class="flex justify-center w-full bg-gray-100 py-10">
+    <div class="w-[600px] bg-white p-6 rounded-lg shadow-sm border border-gray-300">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Create a Post</h2>
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="space-y-2">
+                {{ post_form.as_p }}  <!-- Render form fields including the image field -->
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                Submit
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
