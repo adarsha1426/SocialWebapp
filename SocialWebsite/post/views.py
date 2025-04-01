@@ -125,7 +125,7 @@ def your_post(request, id):
 
     # Now filter posts using the profile (not the user)
     posts = Post.objects.filter(user=profile)  # Filter by profile since `user` is a ForeignKey to `Profile`
-
+    comment=Comment.objects.get(post=post)
     return render(request, "post/your_post.html", {'posts': posts})
 
 @login_required
