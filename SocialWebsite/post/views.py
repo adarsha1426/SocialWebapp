@@ -139,8 +139,8 @@ def delete_post(request,post_id):
     else:
         return HttpResponse(request,"Error")
     
-def delete(request,post_id):
-    post=get_object_or_404(Post,id=post_id)
+def delete(request,post_slug):
+    post=get_object_or_404(Post,id=post_slug)
     if post.user.user == request.user:
         return render(request, "post/delete_post.html", {'post': post})
     else:
@@ -170,8 +170,10 @@ def share_form(request,post_slug):
                     EMAIL_HOST_USER,  
                     [to],                      
                     fail_silently=False         # Raise exceptions if email fails
-)
-            
+                    )
+             
+        
             referer = request.META.get('HTTP_REFERER', '/') # referer is used to redirect to that same page
             return redirect(referer)
-    return render(request,'post/share_email_form.html',{'form':form,'post':post})
+        success_message="Email not sent"
+    return render(request,'post/share_email_form.html',{'form':form,'post':post,})
