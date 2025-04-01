@@ -87,10 +87,9 @@ def change_password(request):
     return render(request, 'userdetail/password_change.html', {'form': form})
 @login_required(login_url='userdetail:login')
 def profile(request):
-  
     profile=Profile.objects.get(user=request.user)
     current_user = request.user
-
+    print(current_user)
     try:
         user_profile=Profile.objects.get(user=current_user)
     except Profile.DoesNotExist:
@@ -98,7 +97,9 @@ def profile(request):
 
     # Exclude posts created by the current user's profile
     posts = Post.objects.filter(user=user_profile)
+    
     posts_count=posts.count()
+    print(posts_count)
     print(profile.count_following)
     return render(request,'userdetail/profile.html',{'profile':profile,
                                                      'posts':posts,
@@ -106,7 +107,6 @@ def profile(request):
                                                      "followers":profile.count_following,
         "following":profile.count_followed_by,})
 @login_required(login_url='userdetail:login')
-
 def edit_profile(request, username):
     user = get_object_or_404(User, username=request.user.username)
     profile = get_object_or_404(Profile, user=request.user)
@@ -185,7 +185,6 @@ def search_user(request):
         q=request.GET.get('q')
         #__contains is equivalent to Select * where username==q
         users=User.objects.filter(username__icontains=q)
-        
         return render(request,"userdetail/search.html",{'users':users})
 
 

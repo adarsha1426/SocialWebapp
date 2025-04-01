@@ -55,7 +55,7 @@
                 <a href="{% url 'post:like' post_slug=post.slug %}"><img src="{% static "logo\like-logo.png" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
                 {% endif %}
                 
-                <a href="{% url "post:create_comment" post_slug=post.slug %}"><img src="{% static "logo\comment-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>
+                <a href="{% url "post:create_comment" post_slug=post.slug %}"><img src="{% static "logo\comment-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>{{post.comment.count}}
                 <a href="{% url "post:share_email_form" post_slug=post.slug %}"> <img src="{% static "logo\share-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>
 
             

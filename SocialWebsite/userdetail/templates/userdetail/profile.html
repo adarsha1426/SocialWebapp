@@ -17,7 +17,8 @@
                  src="{% if profile.profile_pic %}{{ profile.profile_pic.url }}{% else %}{% static 'profile_images/default_profile.jpg' %}{% endif %}" 
                  alt="{{ profile.user }}">
         </div>
-
+       
+        
         <div>
             <h1 class="text-xl font-semibold">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
             <p class="text-gray-500">@{{ profile.user.username }}</p>
@@ -51,6 +52,17 @@
                 <p class="text-sm">{{ followers }}</p>
             </div>
         </div>
+        {% for post in posts  %}
+        <h1>{{post.body}}</h1>
+        <img src="{{post.image.url}}" alt="{{post.slug}}">
+        {% if request.user.profile in post.likes.all %}  
+    <a href="{% url 'post:like' post_slug=post.slug %}">Unlike<img src="{% static "logo\unlike-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+    {% else %}
+    <a href="{% url 'post:like' post_slug=post.slug %}">Like <img src="{% static "logo\like-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+    {% endif %}
+    <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
+    <a href="#">Share</a>
+        {% endfor %}
     </div>
 </body>
 
