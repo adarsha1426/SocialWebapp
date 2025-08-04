@@ -47,16 +47,41 @@
                 {% endif %}
        
                 
-                {% if request.user.profile in post.likes.all %}
+               <!-- Actions: Like, Comment, Share -->
+                <div class="mt-4 flex items-center space-x-6">
+                    <!-- Like Button -->
+                    <div class="flex items-center space-x-2">
+                        {% if request.user.profile in post.likes.all %}
+                        <a href="{% url 'post:like' post_slug=post.slug %}">
+                            <img src="{% static 'logo/dislike-logo.png' %}" alt="Dislike" class="h-5 w-5">
+                        </a>
+                        {% else %}
+                        <a href="{% url 'post:like' post_slug=post.slug %}">
+                            <img src="{% static 'logo/like-logo.png' %}" alt="Like" class="h-5 w-5">
+                        </a>
+                        {% endif %}
+                        <span class="text-gray-700 text-sm">({{ post.likes.count }})</span>
+                    </div>
+
+            <!-- Comment Button -->
+            <div class="flex items-center space-x-2">
+                <a href="{% url 'post:create_comment' post_slug=post.slug %}">
+                    <img src="{% static 'logo/comment-logo.png' %}" alt="Comment" class="h-5 w-5">
+                </a>
+                <span class="text-gray-700 text-sm">{{ post.comment.count }}</span>
+            </div>
+
+            <!-- Share Button -->
+            <div class="flex items-center">
+                <a href="{% url 'post:share_email_form' post_slug=post.slug %}">
+                    <img src="{% static 'logo/share-logo.png' %}" alt="Share" class="h-6 w-6">
+                </a>
+            </div>
+        </div>
+
                 
-                <a href="{% url 'post:like' post_slug=post.slug %}"><img src="{% static "logo\dislike-logo.png" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
-                {% else %}
-               
-                <a href="{% url 'post:like' post_slug=post.slug %}"><img src="{% static "logo\like-logo.png" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
-                {% endif %}
-                
-                <a href="{% url "post:create_comment" post_slug=post.slug %}"><img src="{% static "logo\comment-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>{{post.comment.count}}
-                <a href="{% url "post:share_email_form" post_slug=post.slug %}"> <img src="{% static "logo\share-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>
+                {% comment %} <a href="{% url "post:create_comment" post_slug=post.slug %}"><img src="{% static "logo\comment-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>{{post.comment.count}}
+                <a href="{% url "post:share_email_form" post_slug=post.slug %}"> <img src="{% static "logo\share-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a> {% endcomment %}
 
             
             </div>

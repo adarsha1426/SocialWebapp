@@ -5,14 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    {% if request.user %}
+    <title>{{request.user.first_name}}</title>
+    {% else %}
+    <title>Login</title>
+    {% endif %}
     {% tailwind_css %}
 </head>
-<style>
-
-    
-</style>
 <body >
     <nav class="bg-white shadow-lg  flex  justify-evenly static">
         <div class="container mx-auto px-4 flex justify-between items-center h-16">
@@ -45,7 +44,7 @@
                 {% if request.user.is_authenticated %}
                     {% if profile.profile_pic %}
                         <a href="{% url 'userdetail:profile' %}">
-                            <img class="h-10 w-10 rounded-full" src="{{ profile.profile_pic }}" alt="{{ request.user.username }}">
+                            <img class="h-10 w-10 rounded-full" src="{{ request.user.profile.profile_pic }}" alt="{{ request.user.username }}">
                         </a>
         {% else %}
         <a href="{% url 'userdetail:profile' %}">

@@ -1,17 +1,21 @@
 from django import forms
-from .models import Post,Comment
+from .models import Post, Comment
+
 
 class PostForm(forms.ModelForm):
     class Meta:
-        model=Post
-        fields=['body','image']
+        model = Post
+        fields = ["body", "image"]
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model=Comment
-        fields=['body',]
+        model = Comment
+        fields = [
+            "body",
+        ]
 
 
 class ShareEmailForm(forms.Form):
-    to=forms.EmailField()
-    message=forms.CharField(required=False,widget=forms.Textarea)
+    to = forms.EmailField()
+    message = forms.CharField(required=False, widget=forms.Textarea)

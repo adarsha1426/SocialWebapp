@@ -2,57 +2,59 @@
 {% load widget_tweaks %}
 {% load static tailwind_tags %}
 {% load tailwind_tags %}
+{% include "base.html" %}
 {% tailwind_css %}
 <head>
     <title>Post</title>
 </head>
 
-<div class=" felx justify-center max-w-md mt-11 pt-14  bg-blue-500 p-6 rounded-lg shadow-md ">
-<div class="bg-white p-6 rounded-lg shadow-md border border-slate-rgb(0,0,0)">
-<div class="flex items-center space-x-2 mb-4">
-    <!-- Profile Picture -->
-    {% if post.user.profile_pic %}
-    <img class="h-10 w-10 rounded-full" src="{{ post.user.profile_pic }}" alt="{{ post.user.username }}">
-    {% else %}
-    <img class="h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ post.user.username }}">
-    {% endif %}
-    <!-- Username and Post Details -->
-    <div class="flex flex-col">
-        <h2 class="font-semibold text-lg">{{ post.user }}</h2>
-        <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
-    </div>
-</div>
+<div class=" felx justify-center  max-w-md mt-11 pt-14  bg-blue-500 p-6 rounded-lg shadow-md ">
+    <div class="bg-white p-6 rounded-lg shadow-md border border-slate-rgb(0,0,0)">
+        <div class="flex items-center space-x-2 mb-4">
+            <!-- Profile Picture -->
+            {% if post.user.profile_pic %}
+            <img class="h-10 w-10 rounded-full" src="{{ post.user.profile_pic }}" alt="{{ post.user.username }}">
+            {% else %}
+            <img class="h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ post.user.username }}">
+            {% endif %}
+            <!-- Username and Post Details -->
+            <div class="flex flex-col">
+                <h2 class="font-semibold text-lg">{{ post.user }}</h2>
+                <p class="text-sm text-gray-500">Posted by <a href="userdetail:profile">{{ post.user }}</a> on {{ post.created | date }}</p>
+            </div>
+        </div>
 
-    <!-- Post Content -->
-    <p class="container flex items-center justify-center text-gray-700 ">{{ post.body }}</p>
-    {% if post.image %}
-    <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
-    {% endif %}
-  
-     <div class="contatiner flex items-center space-x-3 mt-4">
-        {% if request.user.profile in post.likes.all %}  
-        <a href="{% url 'post:like' post_slug=post.slug %}"><img src="{% static "logo\unlike-logo.png" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
-        {% else %}
-        <a href="{% url 'post:like' post_slug=post.slug %}"> <img src="{% static "logo\like-logo.png" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+        <!-- Post Content -->
+        <p class="container flex items-center justify-center text-gray-700 ">{{ post.body }}</p>
+        {% if post.image %}
+        <img class="w-full mt-4 " src="{{ post.image.url }}" alt="{{ post.title }}">
         {% endif %}
-        <a href="{% url "post:create_comment" post_slug=post.slug %}"><img src="{% static "logo\comment-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>
-        <a href="#"><img src="{% static "logo\share-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>
-     </div>
-</div>
+    
+        <div class="contatiner flex items-center space-x-3 mt-4">
+            {% if request.user.profile in post.likes.all %}  
+            <a href="{% url 'post:like' post_slug=post.slug %}"><img src="{% static "logo\unlike-logo.png" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+            {% else %}
+            <a href="{% url 'post:like' post_slug=post.slug %}"> <img src="{% static "logo\like-logo.png" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
+            {% endif %}
+            <a href="{% url "post:create_comment" post_slug=post.slug %}"><img src="{% static "logo\comment-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>
+            <a href="#"><img src="{% static "logo\share-logo.png" %}" alt="webapplogo" class="h-12 w-12"></a>
+        </div>
+    </div>
     <a href="{% url "post:create_comment" post_slug=post.slug %}">Comment</a>
     <a href="{% url "post:share_email_form" post_slug=post.slug %}">Share</a>
     <p>likes: {{post.count_like}}</p>
+</div>
+
+<div class="comments-section">
+<h2>Comments ({{ comment_count }})</h2>
+{% for comment in comments %}
+    <div class="comment">
+        <strong>{{ comment.user.user.first_name }} {{comment.user.user.last_name}}</strong>:<!-- commentmodel-> user -> Profilemodel - > user - > username-->
+        {{ comment.body }}<br>
+        <small>Posted on {{ comment.created_at }}</small>
     </div>
-       <div class="comments-section">
-        <h2>Comments ({{ comment_count }})</h2>
-        {% for comment in comments %}
-            <div class="comment">
-                <strong>{{ comment.user.user.first_name }} {{comment.user.user.last_name}}</strong>:<!-- commentmodel-> user -> Profilemodel - > user - > username-->
-                {{ comment.body }}<br>
-                <small>Posted on {{ comment.created_at }}</small>
-            </div>
             <hr>
         {% empty %}
             <p>No comments yet. Be the first to comment!</p>
         {% endfor %}
-    </div>
+</div>

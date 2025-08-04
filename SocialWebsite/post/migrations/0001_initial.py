@@ -9,32 +9,77 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('userdetail', '0003_profile_follow'),
+        ("userdetail", "0003_profile_follow"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Post',
+            name="Post",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50)),
-                ('slug', models.SlugField(blank=True, max_length=100)),
-                ('body', models.CharField(max_length=100)),
-                ('image', models.ImageField(upload_to='')),
-                ('like_count', models.IntegerField(default=0)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('likes', models.ManyToManyField(related_name='post_like', to='userdetail.profile')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='userdetail.profile')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=50)),
+                ("slug", models.SlugField(blank=True, max_length=100)),
+                ("body", models.CharField(max_length=100)),
+                ("image", models.ImageField(upload_to="")),
+                ("like_count", models.IntegerField(default=0)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "likes",
+                    models.ManyToManyField(
+                        related_name="post_like", to="userdetail.profile"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="userdetail.profile",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('like_count', models.IntegerField()),
-                ('likes', models.ManyToManyField(related_name='comment_like', to='userdetail.profile')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='userdetail.profile')),
-                ('post', models.ForeignKey(max_length='300', on_delete=django.db.models.deletion.CASCADE, to='post.post')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("like_count", models.IntegerField()),
+                (
+                    "likes",
+                    models.ManyToManyField(
+                        related_name="comment_like", to="userdetail.profile"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="userdetail.profile",
+                    ),
+                ),
+                (
+                    "post",
+                    models.ForeignKey(
+                        max_length="300",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="post.post",
+                    ),
+                ),
             ],
         ),
     ]
