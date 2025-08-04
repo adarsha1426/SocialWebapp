@@ -1,0 +1,6 @@
+env
+db.sqlite3
+__pycache__/
+static/post_images
+static/profile_images
+to-do-notes.txt

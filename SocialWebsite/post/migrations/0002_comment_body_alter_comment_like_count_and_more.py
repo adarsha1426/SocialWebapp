@@ -6,49 +6,53 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('post', '0001_initial'),
-        ('userdetail', '0004_alter_profile_profile_pic'),
+        ("post", "0001_initial"),
+        ("userdetail", "0004_alter_profile_profile_pic"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='body',
+            model_name="comment",
+            name="body",
             field=models.CharField(blank=True, max_length=200),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='like_count',
+            model_name="comment",
+            name="like_count",
             field=models.IntegerField(blank=True, default=0),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='likes',
-            field=models.ManyToManyField(blank=True, related_name='comment_like', to='userdetail.profile'),
+            model_name="comment",
+            name="likes",
+            field=models.ManyToManyField(
+                blank=True, related_name="comment_like", to="userdetail.profile"
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='body',
+            model_name="post",
+            name="body",
             field=models.CharField(blank=True, max_length=280),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='image',
-            field=models.ImageField(blank=True, upload_to='static/post_images'),
+            model_name="post",
+            name="image",
+            field=models.ImageField(blank=True, upload_to="static/post_images"),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='like_count',
+            model_name="post",
+            name="like_count",
             field=models.IntegerField(blank=True, default=0),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='likes',
-            field=models.ManyToManyField(blank=True, related_name='post_like', to='userdetail.profile'),
+            model_name="post",
+            name="likes",
+            field=models.ManyToManyField(
+                blank=True, related_name="post_like", to="userdetail.profile"
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='slug',
+            model_name="post",
+            name="slug",
             field=models.SlugField(unique=True),
         ),
     ]

@@ -2,121 +2,138 @@ from django.shortcuts import render
 from userdetail.models import Profile
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .models import Post,Comment
-from .forms import PostForm,CommentForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect,HttpResponse
+from django.shortcuts import redirect, HttpResponse
 from django.http import JsonResponse
 
 from django.db.models import Count
 
 from django.conf import settings
 from django.contrib import messages
-#for email
+
+# for email
 from django.core.mail import send_mail
 from .forms import ShareEmailForm
 from django.http import HttpRequest
 from SocialWebsite.settings import EMAIL_HOST_USER
 
+
 # Create your views here.
-@login_required(login_url='userdetail:login')
+@login_required(login_url="userdetail:login")
 def home(request):
     current_user = request.user
     try:
-        user_profile=Profile.objects.get(user=current_user)
+        user_profile = Profile.objects.get(user=current_user)
     except Profile.DoesNotExist:
-        user_profile,created = Profile.objects.get_or_create(user=request.user)
+        user_profile, created = Profile.objects.get_or_create(user=request.user)
 
     # Exclude posts created by the current user's profile
     posts = Post.objects.exclude(user=user_profile)
-    
+
     try:
         profile = Profile.objects.get(user=request.user)
     except Profile.DoesNotExist:
         profile, created = Profile.objects.get_or_create(user=request.user)
-    
-    
+
     # Fetching full model instances instead of values()
     profile_objects = Profile.objects.exclude(user=current_user)
     user_profile = User.objects.exclude(id=current_user.id)
     context = {
-        'posts': posts,
-        'profile': profile,
-        'profile_objects': profile_objects,
-        'user_profile': user_profile,
-        
+        "posts": posts,
+        "profile": profile,
+        "profile_objects": profile_objects,
+        "user_profile": user_profile,
     }
     return render(request, "post/homepage.html", context)
 
-#nav bar
+
+# nav bar
 def base(request):
     user = get_object_or_404(User, username=request.user)
-    profile=Profile.objects.get(user=request.user)
-    print(profile.profile_pic) 
-    return render(request,"base.html",{'profile':profile})
+    profile = Profile.objects.get(user=request.user)
+    print(profile.profile_pic)
+    return render(request, "base.html", {"profile": profile})
 
-#creating post
+
+# creating post
 @login_required
 def create_post(request):
     if request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)  # Get the Profile of the logged-in user
-        if request.method == 'POST':
-            post_form = PostForm(request.POST ,request.FILES)
+        profile = Profile.objects.get(
+            user=request.user
+        )  # Get the Profile of the logged-in user
+        if request.method == "POST":
+            post_form = PostForm(request.POST, request.FILES)
             if post_form.is_valid():
                 post = post_form.save(commit=False)  # Don't save to the database yet
                 post.user = profile  # Assign the Profile, not the User
                 post.save()  # Now save the post
                 messages.success(request, "Post created successfully!")
-                return redirect('post:home')  # Redirect after successful post creation
+                return redirect("post:home")  # Redirect after successful post creation
             else:
                 messages.error(request, "Error while posting form")
         else:
             post_form = PostForm()
 
     else:
-        return redirect('post:home')  
-    return render(request, 'post/create_post.html', {'post_form': post_form})
+        return redirect("post:home")
+    return render(request, "post/create_post.html", {"post_form": post_form})
 
-#post detail
-def postdetail(request,post_slug):
-    post=get_object_or_404(Post,slug=post_slug)
+
+# post detail
+def postdetail(request, post_slug):
+    post = get_object_or_404(Post, slug=post_slug)
     comments = Comment.objects.filter(post=post)
-    comment_co=Comment.objects.annotate(Count('body')).filter(post=post)
-    comment_count=len(comment_co)
-    print(comment.get_username() for comment in comments)
-    return render(request,'post/post.html',{'post':post,'comments':comments,'comment_count':comment_count})
+    comment_co = Comment.objects.annotate(Count("body")).filter(post=post)
+    comment_count = len(comment_co)
 
-#post like
-def like(request,post_slug):
-    post=get_object_or_404(Post,slug=post_slug)
-    msg=False
+    return render(
+        request,
+        "post/post.html",
+        {"post": post, "comments": comments, "comment_count": comment_count},
+    )
+
+
+# post like
+def like(request, post_slug):
+    post = get_object_or_404(Post, slug=post_slug)
+    msg = False
     if request.user.profile in post.likes.all():
         post.likes.remove(request.user.profile)
-        msg=False
-       
+        msg = False
+
     else:
         post.likes.add(request.user.profile)
-        msg=True
-        
-    like_count=post.count_like()
-    referer = request.META.get('HTTP_REFERER', '/') # referer is used to redirect to that same page
+        msg = True
+
+    like_count = post.count_like()
+    referer = request.META.get(
+        "HTTP_REFERER", "/"
+    )  # referer is used to redirect to that same page
     return redirect(referer)
-#Creating comment
+
+
+# Creating comment
 @login_required
 def create_comment(request, post_slug):
     post = get_object_or_404(Post, slug=post_slug)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
-            comment.user = request.user.profile # Assuming comments are linked to a user
+            comment.user = (
+                request.user.profile
+            )  # Assuming comments are linked to a user
             comment.save()
-            return redirect('post:home')  # Redirect after successful comment
+            return redirect("post:home")  # Redirect after successful comment
     else:
         form = CommentForm()
-    return render(request, 'post/create_comment.html', {'comment_form': form, 'post': post})
-
+    return render(
+        request, "post/create_comment.html", {"comment_form": form, "post": post}
+    )
 
 
 def your_post(request, id):
@@ -124,56 +141,71 @@ def your_post(request, id):
     profile = get_object_or_404(Profile, user=user)  # Get the profile based on the user
 
     # Now filter posts using the profile (not the user)
-    posts = Post.objects.filter(user=profile)  # Filter by profile since `user` is a ForeignKey to `Profile`
-    comment=Comment.objects.get(post=post)
-    return render(request, "post/your_post.html", {'posts': posts})
+    posts = Post.objects.filter(
+        user=profile
+    )  # Filter by profile since `user` is a ForeignKey to `Profile`
+    comment = Comment.objects.get(post=post)
+    return render(request, "post/your_post.html", {"posts": posts})
+
 
 @login_required
-def delete_post(request,post_id):
-    post=get_object_or_404(Post,id=post_id)
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
     print(post.user)
     print(f"requested user: {request.user}")
-    if post.user.user==request.user:
-        post.delete()
-        return redirect('post:home')
-    else:
-        return HttpResponse(request,"Error")
-    
-def delete(request,post_slug):
-    post=get_object_or_404(Post,id=post_slug)
     if post.user.user == request.user:
-        return render(request, "post/delete_post.html", {'post': post})
+        post.delete()
+        return redirect("post:home")
     else:
-        return HttpResponse(f"{request.user} Post user {post.user.user}You are not authorized to delete this post.")
+        return HttpResponse(request, "Error")
+
+
+def delete(request, post_slug):
+    post = get_object_or_404(Post, id=post_slug)
+    if post.user.user == request.user:
+        return render(request, "post/delete_post.html", {"post": post})
+    else:
+        return HttpResponse(
+            f"{request.user} Post user {post.user.user}You are not authorized to delete this post."
+        )
+
 
 @login_required
-def share_form(request,post_slug):
-    post=get_object_or_404(Post,slug=post_slug)
-    sent=False
-    form=ShareEmailForm()
-    if request.method=="POST":
-        form=ShareEmailForm(request.POST)
+def share_form(request, post_slug):
+    post = get_object_or_404(Post, slug=post_slug)
+    sent = False
+    form = ShareEmailForm()
+    if request.method == "POST":
+        form = ShareEmailForm(request.POST)
         if form.is_valid():
-            post_url=request.build_absolute_uri(post.get_sharedpost_url())
-            name=f"{request.user}"
-            to=form.cleaned_data['to']
-            comment=form.cleaned_data['message']
+            post_url = request.build_absolute_uri(post.get_sharedpost_url())
+            name = f"{request.user}"
+            to = form.cleaned_data["to"]
+            comment = form.cleaned_data["message"]
             message = (
                 f"This post was shared by your friend {request.user.username}.\n\n"
                 f"Post URL: {post_url}\n\n"
                 f"Message: {comment}"
             )
-            subject="Social web app post share via email"
+            subject = "Social web app post share via email"
             send_mail(
-                    subject,                   
-                    message,                   
-                    EMAIL_HOST_USER,  
-                    [to],                      
-                    fail_silently=False         # Raise exceptions if email fails
-                    )
-             
-        
-            referer = request.META.get('HTTP_REFERER', '/') # referer is used to redirect to that same page
+                subject,
+                message,
+                EMAIL_HOST_USER,
+                [to],
+                fail_silently=False,  # Raise exceptions if email fails
+            )
+
+            referer = request.META.get(
+                "HTTP_REFERER", "/"
+            )  # referer is used to redirect to that same page
             return redirect(referer)
-        success_message="Email not sent"
-    return render(request,'post/share_email_form.html',{'form':form,'post':post,})
+        success_message = "Email not sent"
+    return render(
+        request,
+        "post/share_email_form.html",
+        {
+            "form": form,
+            "post": post,
+        },
+    )

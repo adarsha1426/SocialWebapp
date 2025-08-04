@@ -1,5 +1,5 @@
 {% load static %}
-{% include "base.html" %}
+{% include "nav.html" %}
 {% block content %}
 <div class=" felx justify-center max-w-md mt-11 pt-14  bg-blue-500 p-6 rounded-lg shadow-md ">
     <div class="bg-white p-6 rounded-lg shadow-md border border-slate-rgb(0,0,0)">
@@ -33,11 +33,11 @@
         {% endif %}
 
         <!-- Like, Comment, Share Buttons -->
-        <div class="flex space-x-4 mt-2">
-            <a href="#" class="text-blue-500">Like</a>
+        {% comment %} <div class="flex space-x-4 mt-2">
+            <a href="post:" class="text-blue-500">Like</a>
             <a href="#" class="text-blue-500">Comment</a>
             <a href="#" class="text-blue-500">Share</a>
-        </div>
+        </div> {% endcomment %}
 
         <p>Likes: {{ post.likes.count }}</p>
 
