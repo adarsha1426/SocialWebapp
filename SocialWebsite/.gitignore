@@ -4,3 +4,5 @@ __pycache__/
 static/post_images
 static/profile_images
 to-do-notes.txt
+.env
+venv
