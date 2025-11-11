@@ -4,14 +4,14 @@ from django.conf import settings
 from django.utils.text import slugify
 import uuid
 from django.urls import reverse
+from utils.common_model import CommonModel
 
 
-class Post(models.Model):
+class Post(CommonModel):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     slug = models.SlugField(null=False, unique=True)
     body = models.CharField(max_length=280, blank=True)
     image = models.ImageField(blank=True, upload_to="static/post_images")
-    created = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(Profile, related_name="post_like", blank=True)
 
     def generate_slug(self):
@@ -47,10 +47,10 @@ class Post(models.Model):
         return reverse("post:your_post", kwargs={"slug": self.slug})
 
     def __str__(self):
-        return f"{self.user} post created on  {self.created} ."
+        return f"{self.user} post created on  {self.created_at} ."
 
 
-class Comment(models.Model):
+class Comment(CommonModel):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, max_length="300", on_delete=models.CASCADE)
     body = models.CharField(max_length=200, blank=True)
@@ -64,3 +64,17 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.body}"
+
+
+class Repost(CommonModel):
+    user = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name="user_reposts"
+    )
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="reposted_post",
+    )
+
+    def __str__(self):
+        return f"{self.user} has reposted a post with id {self.post.id}"
