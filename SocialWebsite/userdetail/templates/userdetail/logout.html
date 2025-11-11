@@ -1,4 +1,6 @@
-{% include "nav.html" %}
+{% load tailwind_tags %}
+{% load static %}
+{%tailwind_css %}
 <body>
     
         {% if messages %}
@@ -9,7 +11,7 @@
         {% endif %}
         <div class="flex justify-center">
             <h1 class=" flex justify-center mt-3 px-2 py-2">You can &nbsp;
-                <a href="{% url "userdetail:login" %}" class="hover:underline text-blue-400 ">Here</a>&nbsp; to log in again .</h1>
+                <a href="{% url "userdetail:login" %}" class="hover:underline text-blue-400 ">Click Here</a>&nbsp; to log in again .</h1>
         </div>
 </body>
 </html>

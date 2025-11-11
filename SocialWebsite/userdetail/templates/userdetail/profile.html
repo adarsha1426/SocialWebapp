@@ -53,8 +53,13 @@
             </div>
         </div>
         {% for post in posts  %}
+        {% if post.body %}
         <h1>{{post.body}}</h1>
+        {% endif %}
+        {% if post.image %}
         <img src="{{post.image.url}}" alt="{{post.slug}}">
+        {% endif %}
+        
         {% if request.user.profile in post.likes.all %}  
     <a href="{% url 'post:like' post_slug=post.slug %}">Unlike<img src="{% static "logo\unlike-logo.jpeg" %}" alt="webapplogo" class="h-12 w-12"> ({{ post.likes.count }})</a>
     {% else %}
