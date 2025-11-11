@@ -17,5 +17,6 @@ urlpatterns = [
     path(
         "share_email_form/<slug:post_slug>", views.share_form, name="share_email_form"
     ),
+    path("repost/<slug:post_slug>", views.repost, name="repost"),
     path("", include("userdetail.urls"), name="userdetail"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

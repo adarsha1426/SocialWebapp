@@ -2,7 +2,7 @@ from django.shortcuts import render
 from userdetail.models import Profile
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .models import Post, Comment
+from .models import Post, Comment, Repost
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, HttpResponse
@@ -40,11 +40,15 @@ def home(request):
     # Fetching full model instances instead of values()
     profile_objects = Profile.objects.exclude(user=current_user)
     user_profile = User.objects.exclude(id=current_user.id)
+
+    reposted_post = Repost.objects.prefetch_related("post").all()
+
     context = {
         "posts": posts,
         "profile": profile,
         "profile_objects": profile_objects,
         "user_profile": user_profile,
+        "reposted_post": reposted_post,
     }
     return render(request, "post/homepage.html", context)
 
@@ -76,7 +80,6 @@ def create_post(request):
                 messages.error(request, "Error while posting form")
         else:
             post_form = PostForm()
-
     else:
         return redirect("post:home")
     return render(request, "post/create_post.html", {"post_form": post_form})
@@ -86,9 +89,8 @@ def create_post(request):
 def postdetail(request, post_slug):
     post = get_object_or_404(Post, slug=post_slug)
     comments = Comment.objects.filter(post=post)
-    comment_co = Comment.objects.annotate(Count("body")).filter(post=post)
-    comment_count = len(comment_co)
-
+    comment_count_queryset = Comment.objects.annotate(Count("body")).filter(post=post)
+    comment_count = len(comment_count_queryset)
     return render(
         request,
         "post/post.html",
@@ -140,19 +142,14 @@ def your_post(request, id):
     user = request.user
     profile = get_object_or_404(Profile, user=user)  # Get the profile based on the user
 
-    # Now filter posts using the profile (not the user)
-    posts = Post.objects.filter(
-        user=profile
-    )  # Filter by profile since `user` is a ForeignKey to `Profile`
-    comment = Comment.objects.get(post=post)
-    return render(request, "post/your_post.html", {"posts": posts})
+    posts = Post.objects.filter(user=profile)
+    comment = Comment.objects.get(post=posts)
+    return render(request, "post/your_post.html", {"posts": posts, "comment": comment})
 
 
 @login_required
 def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    print(post.user)
-    print(f"requested user: {request.user}")
     if post.user.user == request.user:
         post.delete()
         return redirect("post:home")
@@ -209,3 +206,18 @@ def share_form(request, post_slug):
             "post": post,
         },
     )
+
+
+def repost(request, post_slug):
+    profile = Profile.objects.get(user=request.user)
+    print(profile)
+    post = get_object_or_404(Post, slug=post_slug)
+    repost = Repost.objects.filter(user=profile, post=post).exists()
+    if not repost:
+        Repost.objects.create(user=profile, post=post)
+        messages.success(request, "Reposted")
+        return redirect("post:home")
+    else:
+        repost = Repost.objects.get(user=profile, post=post)
+        repost.delete()
+    return redirect("post:home")
