@@ -147,6 +147,7 @@ def edit_profile(request, username):
 def user_profile(request, username):
     try:
         user_profile = User.objects.get(username=username)
+        print(user_profile)
         profile = Profile.objects.get(user=user_profile)
     except (User.DoesNotExist, Profile.DoesNotExist):
         return render(request, "userdetail/user_not_found.html")

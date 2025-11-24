@@ -1,6 +1,7 @@
 {% load widget_tweaks %}
 {% load static tailwind_tags %}
 {% load static %}
+{% load cache %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,8 +39,6 @@
             <div class="home">
                 <a href="{% url 'userdetail:logout' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"><img src="{% static 'logo\logout-logo.png' %}" alt="Logout logo" class="h-10 w-10"></a>
             </div>
-            {% endif %}
-            {% if request.user.is_authenticated %}
             <div class="home">
                 <form action="{% url "userdetail:search_user" %}" method="GET">
                     <input type="text" name="q" placeholder="Search User"id="">
@@ -47,14 +46,17 @@
                 
             </div>
             {% endif %}
-
+           
+            
             <!-- Profile Section -->
             <div class="profile flex items-center">
                 {% if request.user.is_authenticated %}
-                    {% if profile.profile_pic %}
+                    {% if user_profile.profile_pic %}
+                    {% cache 30 profile_pic  %}
                         <a href="{% url 'userdetail:profile' %}">
-                            <img class="h-10 w-10 rounded-full" src="{{ profile.profile_pic }}" alt="{{ request.user.username }}">
+                            <img class="h-10 w-10 rounded-full" src="{{ user_profile.profile_pic }}" alt="{{ request.user.username }}">
                         </a>
+                              {% endcache %}
                     {% else %}
                         <a href="{% url 'userdetail:profile' %}">
                             <img class="h-10 w-10 rounded-full" src="{% static 'profile_images/default_profile.jpg' %}" alt="{{ request.user.username }}">
@@ -63,6 +65,7 @@
                 {% else %}
                     <a href="{% url 'userdetail:login' %}" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium">Login</a>
                 {% endif %}
+          
             </div>
         </div>
     </nav>

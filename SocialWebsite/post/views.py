@@ -1,17 +1,18 @@
-from django.shortcuts import render
 from userdetail.models import Profile
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
-from .models import Post, Comment, Repost
-from .forms import PostForm, CommentForm
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, HttpResponse
-from django.http import JsonResponse
+
+from post.models import Post, Comment, Repost
+from post.forms import PostForm, CommentForm
 
 from django.db.models import Count
 
 from django.conf import settings
+
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import redirect, HttpResponse, get_object_or_404, render
+
 
 # for email
 from django.core.mail import send_mail
@@ -24,32 +25,31 @@ from SocialWebsite.settings import EMAIL_HOST_USER
 @login_required(login_url="userdetail:login")
 def home(request):
     current_user = request.user
-    try:
-        user_profile = Profile.objects.get(user=current_user)
-    except Profile.DoesNotExist:
-        user_profile, created = Profile.objects.get_or_create(user=request.user)
+    user_profile = get_object_or_404(
+        Profile, user=current_user
+    )  # logged in user profile
 
-    # Exclude posts created by the current user's profile
     posts = Post.objects.exclude(user=user_profile)
-
-    try:
-        profile = Profile.objects.get(user=request.user)
-    except Profile.DoesNotExist:
-        profile, created = Profile.objects.get_or_create(user=request.user)
-
     # Fetching full model instances instead of values()
-    profile_objects = Profile.objects.exclude(user=current_user)
-    user_profile = User.objects.exclude(id=current_user.id)
+    suggested_user_profile = Profile.objects.exclude(user=current_user)
+    suggested_user = User.objects.exclude(
+        id=current_user.id
+    )  # this is for post of user profile
+    repost_map = {
+        post.id: Repost.objects.filter(user=current_user.profile, post=post).exists()
+        for post in posts
+    }
 
-    reposted_post = Repost.objects.prefetch_related("post").all()
-
+    comment_count = Comment.objects.select_related("post").count()
     context = {
         "posts": posts,
-        "profile": profile,
-        "profile_objects": profile_objects,
+        # "profile": profile,
+        "suggested_user": suggested_user,  # this is the user objects except the profile
         "user_profile": user_profile,
-        "reposted_post": reposted_post,
+        "comment_count": comment_count,
+        "repost_map": repost_map,
     }
+
     return render(request, "post/homepage.html", context)
 
 
@@ -57,8 +57,7 @@ def home(request):
 def base(request):
     user = get_object_or_404(User, username=request.user)
     profile = Profile.objects.get(user=request.user)
-    print(profile.profile_pic)
-    return render(request, "base.html", {"profile": profile})
+    return render(request, "base.html", {"current_profile": profile})
 
 
 # creating post
@@ -82,19 +81,30 @@ def create_post(request):
             post_form = PostForm()
     else:
         return redirect("post:home")
-    return render(request, "post/create_post.html", {"post_form": post_form})
+    return render(
+        request,
+        "post/create_post.html",
+        {"post_form": post_form, "user_profile": profile},
+    )
 
 
 # post detail
 def postdetail(request, post_slug):
+    profile = Profile.objects.get(user=request.user)
     post = get_object_or_404(Post, slug=post_slug)
+    print("Post User", post.user)
     comments = Comment.objects.filter(post=post)
     comment_count_queryset = Comment.objects.annotate(Count("body")).filter(post=post)
     comment_count = len(comment_count_queryset)
     return render(
         request,
         "post/post.html",
-        {"post": post, "comments": comments, "comment_count": comment_count},
+        {
+            "post": post,
+            "comments": comments,
+            "comment_count": comment_count,
+            "user_profile": profile,
+        },
     )
 
 
@@ -219,5 +229,6 @@ def repost(request, post_slug):
         return redirect("post:home")
     else:
         repost = Repost.objects.get(user=profile, post=post)
+        messages.error(request, "Repost Deleeted")
         repost.delete()
     return redirect("post:home")
