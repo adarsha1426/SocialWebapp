@@ -40,7 +40,13 @@
                 </a>
                 {% endif %}
             </div>
+            
             {% endif %}
+            <div>
+            <a href="{% url 'userdetail:edit' user.username %}" class="text-blue-500 font-medium border border-gray-300 py-1 px-4 rounded-full hover:bg-gray-100">
+                Edit Profile
+            </a>
+        </div>
         </div>
         
         <div class="flex justify-around text-center text-gray-700 p-4 bg-white shadow-md border-b border-gray-200">
@@ -65,6 +71,7 @@
             {% endfor %}
         </div>
         {% endif %}
+        
 
         <div class="space-y-4 mt-6">
             <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">Posts by {{ profile.user.first_name }}</h2>
@@ -100,12 +107,12 @@
                     <div class="flex items-center space-x-1">
                         {% if request.user.profile in post.likes.all %}
                         <a href="{% url 'post:like' post_slug=post.slug %}" class="flex items-center text-red-500 hover:text-red-700 transition duration-150">
-                            <img src="{% static "logo/unlike-logo.jpeg" %}" alt="Unlike" class="h-5 w-5 mr-1">
+                            <img src="{% static "logo/unlike-logo." %}" alt="Unlike" class="h-5 w-5 mr-1">
                             <span class="font-medium">Unlike ({{ post.likes.count }})</span>
                         </a>
                         {% else %}
                         <a href="{% url 'post:like' post_slug=post.slug %}" class="flex items-center hover:text-blue-600 transition duration-150">
-                            <img src="{% static "logo/like-logo.jpeg" %}" alt="Like" class="h-5 w-5 mr-1">
+                            <img src="{% static "logo/like-logo.png" %}" alt="Like" class="h-5 w-5 mr-1">
                             <span class="font-medium">Like ({{ post.likes.count }})</span>
                         </a>
                         {% endif %}
