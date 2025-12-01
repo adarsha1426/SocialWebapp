@@ -1,24 +1,20 @@
-from userdetail.models import Profile
-
-from post.models import Post, Comment, Repost
-from post.forms import PostForm, CommentForm
-
-from django.db.models import Count
-
 from django.conf import settings
-
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import redirect, HttpResponse, get_object_or_404, render
-
+from django.contrib.auth.models import User
 
 # for email
 from django.core.mail import send_mail
-from .forms import ShareEmailForm
-from django.http import HttpRequest
+from django.db.models import Count
+from django.http import HttpRequest, JsonResponse
+from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
 from SocialWebsite.settings import EMAIL_HOST_USER
+from userdetail.models import Profile
+
+from post.forms import CommentForm, PostForm
+from post.models import Comment, Post, Repost
+
+from .forms import ShareEmailForm
 
 
 # Create your views here.
@@ -35,22 +31,25 @@ def home(request):
     suggested_user = User.objects.exclude(
         id=current_user.id
     )  # this is for post of user profile
-    repost_map = {
-        post.id: Repost.objects.filter(user=current_user.profile, post=post).exists()
-        for post in posts
-    }
 
-    comment_count = Comment.objects.select_related("post").count()
+    reposted_post_ids = Repost.objects.filter(user=user_profile).values_list(
+        "post_id", flat=True
+    )
+    print(reposted_post_ids)
     context = {
         "posts": posts,
-        # "profile": profile,
-        "suggested_user": suggested_user,  # this is the user objects except the profile
+        "suggested_user": suggested_user,
         "user_profile": user_profile,
-        "comment_count": comment_count,
-        "repost_map": repost_map,
+        "comment_count": user_profile,
+        "reposted_post_ids": reposted_post_ids,
+        "flag": flag,
     }
 
     return render(request, "post/homepage.html", context)
+
+
+def flag(request):
+    pass
 
 
 # nav bar
@@ -220,15 +219,15 @@ def share_form(request, post_slug):
 
 def repost(request, post_slug):
     profile = Profile.objects.get(user=request.user)
-    print(profile)
     post = get_object_or_404(Post, slug=post_slug)
-    repost = Repost.objects.filter(user=profile, post=post).exists()
-    if not repost:
-        Repost.objects.create(user=profile, post=post)
-        messages.success(request, "Reposted")
-        return redirect("post:home")
+    repost, created = Repost.objects.get_or_create(user=profile, post=post)
+    if created:
+        messages.success(
+            request, f"{post.id} is reposted by user {profile.user.first_name}"
+        )
     else:
-        repost = Repost.objects.get(user=profile, post=post)
-        messages.error(request, "Repost Deleeted")
         repost.delete()
+        messages.info(
+            request, f"{post.id} is DELTED reposted by user {profile.user.first_name}"
+        )
     return redirect("post:home")
