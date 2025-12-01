@@ -20,5 +20,5 @@ urlpatterns = [
     path("follow/<str:username>", views.follow_user, name="follow_user"),
     path("edit_profile/<str:username>", views.edit_profile, name="edit"),
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

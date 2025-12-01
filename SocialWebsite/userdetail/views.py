@@ -102,7 +102,7 @@ def profile(request):
         user_profile = Profile.objects.get(user=request.user)
     except Profile.DoesNotExist:
         user_profile, created = Profile.objects.get_or_create(user=request.user)
-    profile = Profile.objects.get(user=request.user)
+
     # Exclude posts created by the current user's profile
     posts = Post.objects.filter(user=user_profile)
     posts_count = posts.count()
@@ -110,11 +110,11 @@ def profile(request):
         request,
         "userdetail/profile.html",
         {
-            "profile": profile,
+            "profile": user_profile,
             "posts": posts,
             "posts_count": posts_count,
-            "followers": profile.count_following,
-            "following": profile.count_followed_by,
+            "followers": user_profile.count_following,
+            "following": user_profile.count_followed_by,
         },
     )
 
