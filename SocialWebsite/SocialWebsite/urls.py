@@ -23,8 +23,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("__reload__/", include("django_browser_reload.urls")),
-    path("", include("post.urls"), name="post"),
     path("", include("userdetail.urls"), name="userdetail"),
+    path("", include("post.urls"), name="post"),
     path("messaging/", include("messaging.urls"), name="messaging"),
 ]
 if settings.DEBUG:
