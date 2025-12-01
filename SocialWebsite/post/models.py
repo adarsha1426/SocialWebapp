@@ -76,5 +76,8 @@ class Repost(CommonModel):
         related_name="reposted_post",
     )
 
+    class Meta:
+        unique_together = ("user", "post")
+
     def __str__(self):
         return f"{self.user} has reposted a post with id {self.post.id}"
